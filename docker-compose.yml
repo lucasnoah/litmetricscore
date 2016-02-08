@@ -1,0 +1,22 @@
+db:
+  image: postgres
+  volumes_from:
+    - data
+  environment:
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_USER: postgres
+  ports:
+    - "5431:5432"
+
+data:
+  image: cogniteev/echo
+  command: echo 'Data Container for PostgreSQL'
+  volumes:
+    - /var/lib/postgresql/data
+
+
+corenlp:
+  image: lucasnoah/corenlp-server
+  ports:
+    - "8081:8081"
+    - "9990:9990"
