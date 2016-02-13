@@ -1,12 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from core.models import *
 
 
 class TopicModelGroup(models.Model):
     user = models.ForeignKey(User)
-
-
+    input_data = models.TextField()
+    collections = models.ManyToManyField(CorpusItemCollection)
 
 
 class Topic(models.Model):
@@ -28,4 +28,7 @@ class TopicTuple(models.Model):
 
     def __unicode__(self):
         return self.word + ' | ' + str(self.weight)
+
+
+
 

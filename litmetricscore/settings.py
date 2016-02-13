@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'corsheaders',
 
     #my apps
-    'core'
+    'core',
+    'topic_modeling'
 ]
 
 MIDDLEWARE_CLASSES = [

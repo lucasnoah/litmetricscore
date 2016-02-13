@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
 
 
 class TextFile(models.Model):
@@ -43,7 +44,7 @@ class CorpusItemFilter(models.Model):
 
     user = models.ForeignKey(User)
     name = models.CharField(max_length=150)
-    filter_data = models.TextField()
+    filter_data = JSONField()
     models.ForeignKey(CorpusItemCollection)
 
 
@@ -74,6 +75,7 @@ class WordToken(models.Model):
     word = models.CharField(max_length=100)
     is_stopword = models.BooleanField(default=False)
     sentence = models.ForeignKey(Sentence)
+    wordnet_id = models.IntegerField(default=0)
 
 
 class SentenceDependency(models.Model):
@@ -88,5 +90,7 @@ class SentenceDependency(models.Model):
     dependent_gloss = models.CharField(max_length=100)
     governor = models.IntegerField()
     governor_gloss = models.CharField(max_length=100)
+
+
 
 

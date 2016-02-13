@@ -114,3 +114,16 @@ class WordTokenViewSet(viewsets.ModelViewSet):
         print qs
         return qs
 
+
+class CorpusItemFilterViewSet(viewsets.ModelViewSet):
+
+    queryset = CorpusItemFilter.objects.all()
+    serializer_class = CorpusItemFilterSerializer
+
+    def get_queryset(self):
+        qs = CorpusItemFilter.objects.filter(user=self.request.user)
+        return qs
+
+    def perform_create(self, serializer):
+        print self.request.user
+        instance = serializer.save(user=self.request.user)

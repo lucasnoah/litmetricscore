@@ -16,13 +16,19 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework import routers
-from core.views import TextFileViewSet, CorpusItemViewSet, CorpusItemCollectionViewset, WordTokenViewSet
+from core.views import TextFileViewSet, CorpusItemViewSet, CorpusItemCollectionViewset, WordTokenViewSet, \
+    CorpusItemFilterViewSet
+from topic_modeling.views import TopicModelViewSet
+
+
 
 router = routers.DefaultRouter()
 router.register(r'texts', TextFileViewSet)
 router.register(r'corpusitems', CorpusItemViewSet)
 router.register(r'collections', CorpusItemCollectionViewset)
 router.register(r'tokens', WordTokenViewSet)
+router.register(r'filters', CorpusItemFilterViewSet)
+router.register('models', TopicModelViewSet)
 
 
 urlpatterns = [

@@ -29,3 +29,13 @@ class WordTokenSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WordToken
+
+
+class CorpusItemFilterSerializer(serializers.ModelSerializer):
+
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False)
+
+    class Meta:
+        model = CorpusItemFilter
+
+
