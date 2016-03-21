@@ -1,22 +1,85 @@
-db:
-  image: postgres
-  volumes_from:
-    - data
-  environment:
-    POSTGRES_PASSWORD: postgres
-    POSTGRES_USER: postgres
-  ports:
-    - "5431:5432"
+version: "2"
+services:
+  db:
+    image: postgres
+    volumes_from:
+      - data
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    ports:
+      - "5432:5432"
 
-data:
-  image: cogniteev/echo
-  command: echo 'Data Container for PostgreSQL'
-  volumes:
-    - /var/lib/postgresql/data
+  data:
+    image: cogniteev/echo
+    command: echo 'Data Container for PostgreSQL'
+    volumes:
+      - /var/lib/postgresql/data
 
+  code:
+    image: cogniteev/echo
+    command: echo 'Data Container for PostgreSQL'
+    volumes:
+      - /home/lucas/development/litmetricscore
 
-corenlp:
-  image: lucasnoah/corenlp-server
-  ports:
-    - "8081:8081"
-    - "9990:9990"
+  media:
+    image: cogniteev/echo
+    command: echo 'Data Container for media files'
+    volumes:
+      - /home/lucas/development/litmetricscore/media:/srv/media
+
+  corenlp:
+    image: lucasnoah/corenlp
+    ports:
+      - "8081:8081"
+      - "9990:9990"
+
+  web:
+    image: litmetricscore
+    command: gunicorn -w 3 -b 0.0.0.0 litmetricscore.wsgi
+    ports:
+      - "8000:8000"
+    links:
+      - redis:redis
+      - db:db
+      - corenlp:corenlp
+    depends_on:
+      - migration
+    volumes:
+      - /home/lucas/development/litmetricscore/media:/srv/code/media
+
+  celery:
+    image: litmetricscore
+    command: celery -A litmetricscore worker -l info
+    links:
+      - redis:redis
+      - db:db
+      - corenlp:corenlp
+    depends_on:
+      - migration
+    volumes:
+      - /home/lucas/development/litmetricscore/media:/srv/code/media
+
+  migration:
+    image: litmetricscore
+    command: python manage.py migrate
+    links:
+      - db:db
+    depends_on:
+      - redis
+      - db
+      - corenlp
+
+  migration:
+    image: litmetricscore
+    command: python manage.py migrate
+    links:
+      - db:db
+    depends_on:
+      - redis
+      - db
+      - corenlp
+
+  redis:
+    image: redis
+

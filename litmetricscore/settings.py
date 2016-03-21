@@ -101,16 +101,14 @@ DATABASES = {
             # The following settings are not used with sqlite3:
             'USER': 'litmetrics',
             'PASSWORD': 'litmetrics',
-            'HOST': 'localhost',                      # Empty for localhost through domain sockets or           '127.0.0.1' for localhost through TCP.
-            'PORT': '5431',                      # Set to empty string for default.
+            'HOST': 'db',                      # Empty for localhost through domain sockets or           '127.0.0.1' for localhost through TCP.
+            'PORT': '5432',                      # Set to empty string for default.
         },
         'test': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
     }
-
-
 
 
 # Password validation
@@ -150,6 +148,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_ROOT =  BASE_DIR + '/media/'
 
 
 REST_FRAMEWORK = {
@@ -167,15 +166,15 @@ REST_FRAMEWORK = {
 
 
 # CELERY STUFF
-BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+BROKER_URL = 'redis://redis:6379'
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'America/Los Angeles'
 
 #CORE NLP SERVER URL
-CORE_NLP_SERVER_URL = "http://localhost:8081/rpc"
+CORE_NLP_SERVER_URL = "http://corenlp:8081/rpc"
 
 CORS_ORIGIN_ALLOW_ALL = True
 

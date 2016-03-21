@@ -2,7 +2,7 @@ from core.models import *
 from core.nlp_server import *
 from sentence_parsers import *
 from litmetricscore.celery import app
-
+from vard.interface import *
 
 @app.task()
 def initial_document_dump(text_file_id, corpus_item_id):
@@ -17,8 +17,14 @@ def initial_document_dump(text_file_id, corpus_item_id):
     corpus_item = CorpusItem.objects.get(pk=corpus_item_id)
 
     #open up the file and read it into memory
-    print text_file
-    document_text = text_file.file.read()
+    #do var and return text in memory
+    print text_file.file
+    #try:
+    document_text = do_vard(text_file.file)
+    print(document_text)
+    #except Exception as e:
+    #    print e
+    #    document_text = text_file.file.read()
 
     #send the file to be parsed by server
     parsed_text = parse_core_nlp_text(document_text)
@@ -26,7 +32,6 @@ def initial_document_dump(text_file_id, corpus_item_id):
 
     #loop through the output and dump it in the database
     sentences = parsed_text['sentences']
-
 
     #deal with bulk save
     words_to_save = []

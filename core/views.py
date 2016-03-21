@@ -115,6 +115,25 @@ class WordTokenViewSet(viewsets.ModelViewSet):
         return qs
 
 
+    @detail_route(['PATCH'])
+    def update_token(self, request, pk=None):
+        token = WordToken.objects.get(pk=pk)
+        if token.sentence.corpus_item.user == self.request.user:
+            token.pos = self.request.data['pos']
+            token.ner = self.request.data['ner']
+            token.original_text = self.request.data['original_text']
+            token.lemma = self.request.data['lemma']
+            token.save()
+            token = WordToken.objects.get(pk=pk)
+            serializer = WordTokenSerializer(token)
+            return Response(status=200, data=serializer.data)
+
+        else:
+            return Response(status=403, data='Not your token bro.')
+
+
+
+
 class CorpusItemFilterViewSet(viewsets.ModelViewSet):
 
     queryset = CorpusItemFilter.objects.all()

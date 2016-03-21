@@ -39,4 +39,3 @@ class TopicModelViewSet(viewsets.ModelViewSet):
         return Response(status=200)
 
 
-

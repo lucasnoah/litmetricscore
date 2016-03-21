@@ -7,6 +7,7 @@ class TopicModelGroup(models.Model):
     user = models.ForeignKey(User)
     input_data = models.TextField()
     collections = models.ManyToManyField(CorpusItemCollection)
+    created = models.DateTimeField(auto_now_add=True)
 
 
 class Topic(models.Model):

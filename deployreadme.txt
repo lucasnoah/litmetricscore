@@ -22,3 +22,10 @@ We run the latest image of postgres.  Just pull it from docker and run it.
 
 sudo docker pull postgres
 sudo docker -p 127.0.0.1:5431:5432
+
+###CELERY###
+
+###WEB SERVER###
+
+####SCIPY DEOENDENCIES###
+sudo apt-get install libblas-dev liblapack-dev libatlas-base-dev gfortran
