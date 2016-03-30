@@ -49,7 +49,7 @@ services:
       - /home/stevethefarmer/litmetricscore/media:/srv/code/media
 
   celery:
-    image: litmetricscore
+    build: ./
     command: celery -A litmetricscore worker -l info
     links:
       - redis:redis
@@ -61,7 +61,7 @@ services:
       - /home/stevethefarmer/litmetricscore/media:/srv/code/media
 
   migration:
-    image: litmetricscore
+    build: ./
     command: python manage.py migrate
     links:
       - db:db
@@ -71,7 +71,7 @@ services:
       - corenlp
 
   migration:
-    image: litmetricscore
+    build: ./
     command: python manage.py migrate
     links:
       - db:db
