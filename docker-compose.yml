@@ -35,7 +35,7 @@ services:
       - "9990:9990"
 
   web:
-    image: litmetricscore
+    build: ./
     command: gunicorn -w 3 -b 0.0.0.0 litmetricscore.wsgi
     ports:
       - "8000:8000"
