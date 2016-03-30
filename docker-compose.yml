@@ -20,13 +20,13 @@ services:
     image: cogniteev/echo
     command: echo 'Data Container for PostgreSQL'
     volumes:
-      - /home/lucas/development/litmetricscore
+      - /home/stevethefarmer/development/litmetricscore
 
   media:
     image: cogniteev/echo
     command: echo 'Data Container for media files'
     volumes:
-      - /home/lucas/development/litmetricscore/media:/srv/media
+      - /home/stevethefarmer/development/litmetricscore/media:/srv/media
 
   corenlp:
     image: lucasnoah/corenlp
@@ -46,7 +46,7 @@ services:
     depends_on:
       - migration
     volumes:
-      - /home/lucas/development/litmetricscore/media:/srv/code/media
+      - /home/stevethefarmer/litmetricscore/media:/srv/code/media
 
   celery:
     image: litmetricscore
@@ -58,7 +58,7 @@ services:
     depends_on:
       - migration
     volumes:
-      - /home/lucas/development/litmetricscore/media:/srv/code/media
+      - /home/stevethefarmer/litmetricscore/media:/srv/code/media
 
   migration:
     image: litmetricscore
