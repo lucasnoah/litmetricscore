@@ -37,8 +37,8 @@ services:
   web:
     build: ./
     command: gunicorn -w 3 -b 0.0.0.0 litmetricscore.wsgi
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"
     links:
       - redis:redis
       - db:db
@@ -88,8 +88,6 @@ services:
     build: ./nginx/
     ports:
       - "80:80"
-    volumes:
-      - /www/public
     volumes_from:
       - web
     links:
