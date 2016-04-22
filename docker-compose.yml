@@ -36,7 +36,7 @@ services:
 
   web:
     build: ./
-    command: gunicorn -w 3 -b '127.0.0.1:8000' litmetricscore.wsgi
+    command: gunicorn -w 3 -b 127.0.0.1:8000 litmetricscore.wsgi
     ports:
       - "8000:8000"
     links:
