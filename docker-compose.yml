@@ -87,3 +87,12 @@ services:
   redis:
     image: redis
 
+  nginx:
+    restart: always
+    build: ./nginx/
+    ports:
+      - "80:80"
+    volumes_from:
+      - web
+    links:
+      - web:web
