@@ -5,8 +5,8 @@ services:
     volumes_from:
       - data
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: litmetrics
+      POSTGRES_USER: litmetrics
     ports:
       - "5432:5432"
 
