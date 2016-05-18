@@ -48,7 +48,7 @@ services:
 
   migration:
     build: .
-    command: bash -c 'dockerize -wait tcp://db:5432 && python mange.py makemigrations && python manage.py migrate'
+    command: bash -c 'dockerize -wait tcp://db:5432 && python manage.py makemigrations && python manage.py migrate'
     links:
       - db
     depends_on:
