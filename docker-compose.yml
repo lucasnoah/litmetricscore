@@ -1,88 +1,60 @@
 version: "2"
+
 services:
+
   db:
     image: postgres
-    volumes_from:
-      - data
-    environment:
-      POSTGRES_PASSWORD: litmetrics
-      POSTGRES_USER: litmetrics
-    ports:
-      - "5432:5432"
-
-  data:
-    image: cogniteev/echo
-    command: echo 'Data Container for PostgreSQL'
     volumes:
-      - /var/lib/postgresql/data
-
-  code:
-    image: cogniteev/echo
-    command: echo 'Data Container for PostgreSQL'
-    volumes:
-      - /home/stevethefarmer/development/litmetricscore
-
-  media:
-    image: cogniteev/echo
-    command: echo 'Data Container for media files'
-    volumes:
-      - /home/stevethefarmer/development/litmetricscore/media:/srv/media
+    - /var/lib/postgresql
+    restart: always
 
   corenlp:
     image: lucasnoah/corenlp
     ports:
       - "8081:8081"
       - "9990:9990"
-    depends_on:
-      - db 
+
 
   web:
-    build: ./
+    build: .
     command: gunicorn -w 3 -b 0.0.0.0 litmetricscore.wsgi
     ports:
       - "8000:8000"
     links:
       - redis:redis
-      - db:db
       - corenlp:corenlp
+      - db
     depends_on:
       - migration
-      - db
     volumes:
-      - /home/stevethefarmer/litmetricscore/media:/srv/code/media
+      - .:/code
+      - /home/litmetricscore/media:/srv/code/media
+
+    env_file:
+      - ./secrets.env
+
 
   celery:
-    build: ./
+    build: .
     command: celery -A litmetricscore worker -l info
     links:
       - redis:redis
-      - db:db
       - corenlp:corenlp
-    depends_on:
-      - migration
       - db
     volumes:
-      - /home/stevethefarmer/litmetricscore/media:/srv/code/media
+      - /home/litmetricscore/media:/srv/code/media
+    env_file:
+      - ./secrets.env
 
   migration:
-    build: ./
-    command: python manage.py migrate
+    build: .
+    command: bash -c 'dockerize -wait tcp://db:5432 && python mange.py makemigrations && python manage.py migrate'
     links:
-      - db:db
-    depends_on:
-      - redis
       - db
-      - corenlp
-
-  migration:
-    build: ./
-    command: python manage.py migrate
-    links:
-      - db:db
     depends_on:
-      - redis
       - db
-      - corenlp
+    env_file:
+      - ./secrets.env
 
   redis:
     image: redis

@@ -32,6 +32,12 @@ RUN apt-get install libblas-dev liblapack-dev libatlas-base-dev gfortran -y
 RUN apt-get install python-numpy -y
 RUN apt-get install python-scipy -y
 
+RUN apt-get update && apt-get install -y wget
+
+ENV DOCKERIZE_VERSION v0.2.0
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+
 RUN pip install scipy
 RUN pip install numpy
 

@@ -7,6 +7,9 @@ touch /srv/logs/gunicorn.log
 touch /srv/logs/access.log
 tail -n 0 -f /srv/logs/*.log &
 
+# run migations
+python manage.py migrate
+
 # Start Gunicorn processes
 echo Starting Gunicorn.
 exec gunicorn litmetricscore.wsgi:application \
