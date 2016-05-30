@@ -64,6 +64,16 @@ services:
     env_file:
       - ./secrets.env
 
+  migration2:
+    build: .
+    command: bash -c 'dockerize -wait tcp://db:5432 && python manage.py makemigrations topic_modeling && python manage.py migrate topic_modeling'
+    links:
+      - db
+    depends_on:
+      - db
+    env_file:
+      - ./secrets.env
+
   redis:
     image: redis
 
