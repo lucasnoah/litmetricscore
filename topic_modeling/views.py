@@ -34,7 +34,7 @@ class TopicModelViewSet(viewsets.ModelViewSet):
 
         collection_data = self.request.data['collections']
 
-        topic_modeling_celery_task(collection_data,modeling_options, user.id)
+        topic_modeling_celery_task.delay(collection_data,modeling_options, user.id)
 
         return Response(status=200)
 
