@@ -51,6 +51,7 @@ class CorpusItemViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        print 'Im a pony'
         return CorpusItem.objects.filter(user=user)
 
 

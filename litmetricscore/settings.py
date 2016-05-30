@@ -174,3 +174,5 @@ CORE_NLP_SERVER_URL = "http://corenlp:8081/rpc"
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+EMAIL_BACKEND = "sgbackend.SendGridBackend"
+SENDGRID_API_KEY = "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"

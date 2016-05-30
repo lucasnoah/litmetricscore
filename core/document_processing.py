@@ -4,6 +4,15 @@ from sentence_parsers import *
 from litmetricscore.celery import app
 from vard.interface import *
 
+from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
+
+
+def send_document_done_email(user, doc_name):
+    send_mail("litmetrics Document Done Processing", doc_name + ' has finished processing',
+              "litmetrics <info@litmetrics.com", [user.email])
+
+
 @app.task()
 def initial_document_dump(text_file_id, corpus_item_id):
     """
@@ -50,6 +59,7 @@ def initial_document_dump(text_file_id, corpus_item_id):
     corpus_item.save()
 
     #send of an email to notify the user
+    send_document_done_email(corpus_item.text_file.user, corpus_item.title)
 
     print 'corpus has been processed'
 

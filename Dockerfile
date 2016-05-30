@@ -23,7 +23,7 @@ ENV DOCKYARD_SRC=./
 # Directory in container for all project files
 ENV DOCKYARD_SRVHOME=/srv
 # Directory in container for project source files
-ENV DOCKYARD_SRVPROJ=/srv/code/
+ENV DOCKYARD_SRVPROJ=/code
 
 # Update the default application repository sources list
 RUN apt-get update && apt-get -y upgrade
@@ -43,6 +43,7 @@ RUN pip install numpy
 
 RUN pip install gensim
 RUN pip install redis
+RUN pip install sendgrid-django
 
 RUN \
     echo "===> add webupd8 repository..."  && \

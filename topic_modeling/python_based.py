@@ -73,8 +73,6 @@ class LdaHandler(object):
 def grab_tokens_for_corpus_item(id):
     return WordToken.objects.filter(sentence__corpus_item_id=id)
 
-
-
 def grab_initial_bof_query_set_with_filers_from_view(collection_data):
 
     collection_bof_list = []
@@ -87,6 +85,7 @@ def grab_initial_bof_query_set_with_filers_from_view(collection_data):
     return collection_bof_list
 
 def apply_filter_to_collection(collection_tuple):
+    print collection_tuple
     """
     Applies the filters to the collection/filter tuples and returns a list of words for gensim.
     :param collection_tuple:

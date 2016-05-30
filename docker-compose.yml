@@ -2,10 +2,17 @@ version: "2"
 
 services:
 
-  db:
-    image: postgres
+  data:
+    image: cogniteev/echo
+    command: echo 'Data Container for PostgreSQL'
     volumes:
-    - /var/lib/postgresql
+      - /var/lib/postgresql/data
+
+  db:
+    restart: allways
+    image: postgres
+    volumes_from:
+    - data
     restart: always
 
   corenlp:
@@ -17,7 +24,7 @@ services:
 
   web:
     build: .
-    command: gunicorn -w 3 -b 0.0.0.0 litmetricscore.wsgi
+    command:  bash -c "sleep 3 && python manage.py runserver 0.0.0.0:8000" #gunicorn -w 3 -b 0.0.0.0 litmetricscore.wsgi
     ports:
       - "8000:8000"
     links:
@@ -26,9 +33,10 @@ services:
       - db
     depends_on:
       - migration
+    working_dir: /code
     volumes:
       - .:/code
-      - /home/litmetricscore/media:/srv/code/media
+      - ./media:/media
 
     env_file:
       - ./secrets.env
@@ -41,8 +49,8 @@ services:
       - redis:redis
       - corenlp:corenlp
       - db
-    volumes:
-      - /home/litmetricscore/media:/srv/code/media
+    volumes_from:
+      - web
     env_file:
       - ./secrets.env
 
@@ -59,4 +67,4 @@ services:
   redis:
     image: redis
 
- 
+
