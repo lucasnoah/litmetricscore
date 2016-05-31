@@ -56,6 +56,7 @@ services:
   flower:
     build: .
     command: celery -A litmetricscore flower
+    working_dir: /code
     ports:
       - "5000:5000"
     links:
