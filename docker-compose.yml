@@ -21,7 +21,6 @@ services:
       - "8081:8081"
       - "9990:9990"
 
-
   web:
     build: .
     command:  bash -c "sleep 3 && python manage.py runserver 0.0.0.0:8000" #gunicorn -w 3 -b 0.0.0.0 litmetricscore.wsgi
@@ -53,6 +52,23 @@ services:
       - web
     env_file:
       - ./secrets.env
+
+  flower:
+    build: .
+    command: celery -A litmetricscore flower
+    ports:
+      - "5000:5000"
+    links:
+      - redis:redis
+      - corenlp:corenlp
+      - db
+    volumes_from:
+      - web
+    env_file:
+      - ./secrets.env
+    depends_on:
+      - celery
+
 
   migration:
     build: .

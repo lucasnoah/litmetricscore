@@ -44,6 +44,7 @@ RUN pip install numpy
 RUN pip install gensim
 RUN pip install redis
 RUN pip install sendgrid-django
+RUN pip install flower
 
 RUN \
     echo "===> add webupd8 repository..."  && \
