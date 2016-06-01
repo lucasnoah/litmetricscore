@@ -2,4 +2,4 @@
 
 cd "`dirname "$0"`"
 
-java -Xms256M -Xmx512M -jar gui.jar
+java -Xms4G -Xmx4G -jar gui.jar

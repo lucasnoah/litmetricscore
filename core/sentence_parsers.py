@@ -98,7 +98,6 @@ class SentenceHandler(object):
         """
         s = create_and_save_a_sentence(self.sentence_dict, self.corpus_item)
         self.sentence = Sentence.objects.last()
-        print self.sentence
 
 
     def save_word_tokens(self):
@@ -110,8 +109,6 @@ class SentenceHandler(object):
             for token in self.sentence_dict['tokens']:
                 tokens.append(create_and_save_word_token(token, self.sentence))
             return tokens
-
-
 
     def save_sentence_dependecy_parses(self, parse_type_string):
         for parse in self.sentence_dict[parse_type_string]:

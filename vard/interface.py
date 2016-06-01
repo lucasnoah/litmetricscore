@@ -3,7 +3,7 @@ from subprocess import *
 from litmetricscore.settings import BASE_DIR
 
 def jarWrapper(*args):
-    process = Popen(['java', '-jar']+list(args), stdout=PIPE, stderr=PIPE)
+    process = Popen(['java', '-Xms4G', '-jar']+list(args), stdout=PIPE, stderr=PIPE)
     ret = []
     while process.poll() is None:
         line = process.stdout.readline()
@@ -25,6 +25,7 @@ f_score = '70'
 input_file = ''
 output_type = 'Plain'
 output_file_dir = BASE_DIR + '/vard/vard_resource/'
+memory_arg = '-Xms2G -Xmx4G'
 
 def do_vard(input_file):
     """

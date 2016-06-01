@@ -16,7 +16,7 @@ services:
     restart: always
 
   corenlp:
-    image: lucasnoah/corenlp
+    image: lucasnoah/corenlpserver
     ports:
       - "8081:8081"
       - "9990:9990"
@@ -58,7 +58,7 @@ services:
     command: celery -A litmetricscore flower
     working_dir: /code
     ports:
-      - "5000:5000"
+      - "5555:5555"
     links:
       - redis:redis
       - corenlp:corenlp
@@ -69,7 +69,6 @@ services:
       - ./secrets.env
     depends_on:
       - celery
-
 
   migration:
     build: .

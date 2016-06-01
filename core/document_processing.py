@@ -27,16 +27,19 @@ def initial_document_dump(text_file_id, corpus_item_id):
 
     #open up the file and read it into memory
     #do var and return text in memory
-    print text_file.file
-    #try:
-    document_text = do_vard(text_file.file)
-    print(document_text)
-    #except Exception as e:
-    #    print e
-    #    document_text = text_file.file.read()
+    #print text_file.file
+    try:
+        document_text = do_vard(text_file.file)
+        print 'vard is over'
+    except Exception as e:
+        print e
+        document_text = text_file.file.read()
 
     #send the file to be parsed by server
-    parsed_text = parse_core_nlp_text(document_text)
+    try:
+        parsed_text = parse_core_nlp_text(document_text)
+    except Exception as e:
+        print e
     print 'parsing done'
 
     #loop through the output and dump it in the database
