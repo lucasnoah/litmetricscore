@@ -3,7 +3,7 @@ from subprocess import *
 from litmetricscore.settings import BASE_DIR
 
 def jarWrapper(*args):
-    process = Popen(['java', '-Xms4G', '-jar']+list(args), stdout=PIPE, stderr=PIPE)
+    process = Popen(['java', '-Xms8G', '-jar']+list(args), stdout=PIPE, stderr=PIPE)
     ret = []
     while process.poll() is None:
         line = process.stdout.readline()
