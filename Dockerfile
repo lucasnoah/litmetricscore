@@ -5,14 +5,9 @@
 
 # Set the base image to use to Ubuntu
 FROM ubuntu:15.04
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y  software-properties-common && \
-    add-apt-repository ppa:webupd8team/java -y && \
-    apt-get update && \
-    echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
-    apt-get install -y oracle-java8-installer && \
-    apt-get clean
+
+
+
 
 RUN apt-get update && apt-get install -y \
 		gcc \
@@ -21,6 +16,17 @@ RUN apt-get update && apt-get install -y \
 		postgresql-client libpq-dev \
 		sqlite3 \
 	--no-install-recommends && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update
+RUN apt-get install -y software-properties-common
+RUN \
+  add-apt-repository -y ppa:webupd8team/java && \
+  apt-get update && \
+  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
+
+  apt-get install -y oracle-java8-installer && \
+  rm -rf /var/lib/apt/lists/* && \
+  rm -rf /var/cache/oracle-jdk8-installer
 
 # Set the file maintainer (your name - the file's author)
 MAINTAINER lucas noah
