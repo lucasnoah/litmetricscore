@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
@@ -27,7 +26,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost:9000', '*']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,14 +36,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    #third party apps
+    # third party apps
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
     'celery',
     'corsheaders',
 
-    #my apps
+    # my apps
     'core',
     'topic_modeling'
 ]
@@ -83,7 +81,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'litmetricscore.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 """
@@ -106,7 +103,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
 
@@ -125,7 +121,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
@@ -139,19 +134,16 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
-MEDIA_ROOT =  BASE_DIR + '/media/'
-
+MEDIA_ROOT = BASE_DIR + '/media/'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
-
 
     'TEST_REQUEST_RENDERER_CLASSES': (
         'rest_framework.renderers.MultiPartRenderer',
@@ -159,7 +151,6 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.TemplateHTMLRenderer'
     )
 }
-
 
 # CELERY STUFF
 BROKER_URL = 'redis://redis:6379'
@@ -169,10 +160,30 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'America/Los Angeles'
 
-#CORE NLP SERVER URL
+# CORE NLP SERVER URL
 CORE_NLP_SERVER_URL = "http://corenlp:8081/rpc"
 
 CORS_ORIGIN_ALLOW_ALL = True
 
 EMAIL_BACKEND = "sgbackend.SendGridBackend"
 SENDGRID_API_KEY = "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"
+
+DEFAULT_FILTER = {"name": "default",
+                  "filter_data": {
+                      "lemma": True,
+                      "ner": False,
+                      "pos": ['CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS',
+                              'MD', 'NN', 'NNS', 'NNP', 'NNPS', 'PDT', 'PDT', 'POS', 'PRP',
+                              'PRP$', 'RB', 'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD',
+                              'VBG', 'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB'],
+                      "stopwords": (
+                      "i,me,my,myself,we,our,ours,ourselves,you,your,yours,yourself,yourselves,he,him,his,"
+                      "himself,she,her,hers,herself,it,its,itself,they,them,their,theirs,themselves,what,"
+                      "which,who,whom,this,that,these,those,am,is,are,was,were,be,been,being,have,has,had,"
+                      "having,do,does,did ,doing,a,an,the,and,but,if,or,because,as,until,while,of,at,by,"
+                      "for,with,about,against,between,into,through,during,before,after,above,below,to,"
+                      "from,up,down,in,out,on,off,over,under,again,further,then,once,here,there,when,"
+                      "where,why,how,all,any,both,each,few,more,most,other,some,such,no,nor,not,only,own,"
+                      "same,so,than,too,very,s,t,can,will,just,don,should,now")
+                  }
+                  }

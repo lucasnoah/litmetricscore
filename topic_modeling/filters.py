@@ -24,7 +24,9 @@ def filter_out_stopwords(qs, stopword_set):
     """
     remove stopwords from queryset
     """
-    return qs.exclude(lemma__in=stopword_set)
+    stopword_set.replace(" ", "")
+    stopword_set = stopword_set.split(",")
+    return qs.exclude(original_text__in=stopword_set)
 
 
 def tag_words_with_wordsense_id(bag_of_tokens, use_lemmas):

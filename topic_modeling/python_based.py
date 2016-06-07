@@ -3,6 +3,7 @@ from gensim.models.ldamodel import LdaModel
 from core.models import WordToken
 from topic_modeling.filters import *
 from topic_modeling.models import *
+from django.conf import settings
 
 #gather words to be modeled as a list of words
 
@@ -81,11 +82,13 @@ def grab_initial_bof_query_set_with_filers_from_view(collection_data):
         list_of_corpus_items_ids_in_collection = [c['id'] for c in collection['items']]
         #grabs a list of token lists
         document_token_list = [grab_tokens_for_corpus_item(id) for id in list_of_corpus_items_ids_in_collection]
+        print collection['filter']
+        if collection['filter']['name'] == 'default':
+            collection['filter'] = settings.DEFAULT_FILTER
         collection_bof_list.append((document_token_list, collection['filter']))
     return collection_bof_list
 
 def apply_filter_to_collection(collection_tuple):
-    print collection_tuple
     """
     Applies the filters to the collection/filter tuples and returns a list of words for gensim.
     :param collection_tuple:
@@ -145,7 +148,6 @@ def topic_modeling_celery_task(collection_data, options, user):
 
     #turn the tokens into words with the lemmatization and wordnet addition options
     bag_of_docs_to_send_to_gensim =[]
-    print 'bags_of_filtered_word_tokens', bags_of_filtered_word_tokens
     for bag in bags_of_filtered_word_tokens[0]:
         if options['wordNetSense']:
             bag_of_docs_to_send_to_gensim.append(tag_words_with_wordsense_id(bag, options['lemmas']))

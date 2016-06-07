@@ -145,5 +145,4 @@ class CorpusItemFilterViewSet(viewsets.ModelViewSet):
         return qs
 
     def perform_create(self, serializer):
-        print self.request.user
         instance = serializer.save(user=self.request.user)
