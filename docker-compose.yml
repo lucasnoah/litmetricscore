@@ -32,6 +32,7 @@ services:
       - db
     depends_on:
       - migration
+      - db
     working_dir: /code
     volumes:
       - .:/code
