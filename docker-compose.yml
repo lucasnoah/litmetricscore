@@ -3,6 +3,7 @@ version: "2"
 services:
 
   data:
+    restart: allways
     image: cogniteev/echo
     command: echo 'Data Container for PostgreSQL'
     volumes:
