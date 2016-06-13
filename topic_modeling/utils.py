@@ -1,6 +1,41 @@
 from models import TopicModelGroup, TopicTuple, Topic
 import csv
 from django.http import HttpResponse
+import itertools
+
+def chunk_bag_of_word_collection_by_chunk_size(list_to_chunk, chunk_size):
+    """
+    Chunk a bag of word token into chunks of x size
+    :param list_to_chunk:
+    :param chunk_size:
+    :return:
+    """
+
+    if chunk_size < 1:
+        raise IOError
+
+    counter = 0
+    chunks = []
+    while counter < len(list_to_chunk):
+        if counter + chunk_size > len(list_to_chunk):
+            chunks.append(list_to_chunk[counter:])
+
+        else:
+            chunks.append(list_to_chunk[counter:counter+chunk_size])
+
+        counter += chunk_size
+
+    return chunks
+
+def chunk_bag_of_word_collection_by_char_string(word_bag, breakstring):
+    """
+    Chunk tokens in a word by using a breakstring.
+    :param word_bag:
+    :param breakstring:
+    :return:
+    """
+    return [list(g) for k, g in itertools.groupby(word_bag, lambda x: x.original_text in (breakstring,)) if not k]
+
 
 
 def grab_topic_tuple_sets_for_topic_modeling_group(topic_model_group_id):
@@ -37,6 +72,5 @@ def create_csv_from_topics_list(topics_list):
     writer = csv.writer(response)
     for topic in topics_list:
         writer.writerow(topic)
-    print response.content
-
     return response
+
