@@ -1,7 +1,8 @@
+# -*- coding: UTF-8 -*-
 from topic_modeling.models import *
 from rest_framework import serializers
 from core.serializers import CorpusItemCollectionSerializer
-
+import json
 
 class TopicTupleSerializer(serializers.ModelSerializer):
 
@@ -25,10 +26,12 @@ class TopicModelGroupSerializer(serializers.ModelSerializer):
         model = TopicModelGroup
 
     def to_representation(self, instance):
+
         return {
             'id': instance.id,
             'created': instance.created,
             'topics': TopicSerializer(Topic.objects.filter(topic_model_group=instance), many=True).data,
-            'collections': CorpusItemCollectionSerializer(instance.collections.all(), many=True).data
-
+            'collections': CorpusItemCollectionSerializer(instance.collections.all(), many=True).data,
+            'method': instance.method,
+            'options': instance.options
         }

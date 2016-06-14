@@ -130,7 +130,6 @@ class TestPythonBasedModeling(TestCase):
                 }
             ]
 
-
         options = {
 
             "chunking": "count",
@@ -140,7 +139,6 @@ class TestPythonBasedModeling(TestCase):
             "numTopics": 10,
             "wordNetSense": True,
             "lemmas": True
-
         }
 
         self.assertEquals(len(topic_modeling_celery_task(collection_data, options, self.user.id)), 10)
@@ -164,9 +162,9 @@ class TestPythonBasedModeling(TestCase):
             "lemmas": True
 
         }
+
         #TEST HDP TOPIC MODELING
         self.assertEquals(len(hdp_celery_task(collection_data, options, self.user.id)), 150)
-
 
         #TEST LSI CELERY TASK
         options = {

@@ -6,7 +6,7 @@ from topic_modeling.filters import *
 from topic_modeling.models import *
 from django.conf import settings
 from topic_modeling.utils import chunk_bag_of_word_collection_by_char_string, chunk_bag_of_word_collection_by_chunk_size
-
+import json
 
 # gather words to be modeled as a list of words
 
@@ -164,10 +164,12 @@ def apply_filter_to_collection(collection_tuple):
     return document_token_bag
 
 
-def build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data):
+def build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data, method, options):
     topic_group = TopicModelGroup.objects.create(
         user=user,
-        input_data=collection_data
+        input_data=collection_data,
+        method=method,
+        options=json.dumps(options)
     )
 
     for topic in topics:
@@ -241,7 +243,7 @@ def topic_modeling_celery_task(collection_data, options, user, *args, **kwargs):
     topics = handler.lda_model.show_topics(num_topics=options['numTopics'], num_words=10, log=False, formatted=False)
 
     # create output models
-    topic_group = build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data)
+    topic_group = build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data, 'lda', options)
     # relate collections to topic group
     add_collections_to_topic_group(topic_group, collection_data)
 
@@ -297,7 +299,7 @@ def hdp_celery_task(collection_data, options, user):
     topics = handler.hdp_model.show_topics(topics=-1, log=False, formatted=False)
 
     # create output models
-    topic_group = build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data)
+    topic_group = build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data, 'hdp', options)
     # relate collections to topic group
     add_collections_to_topic_group(topic_group, collection_data)
 
@@ -351,7 +353,7 @@ def lsi_celery_task(collection_data, options, user):
     topics = handler.lsi_model.show_topics(formatted=False)
 
     # create output models
-    topic_group = build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data)
+    topic_group = build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data, 'lsi', options)
     # relate collections to topic group
     add_collections_to_topic_group(topic_group, collection_data)
 

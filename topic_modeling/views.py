@@ -44,9 +44,7 @@ class TopicModelViewSet(viewsets.ModelViewSet):
     def lsi_model_topics(self, request, pk=None):
         user = self.request.user
         modeling_options = self.request.data['options']
-
         collection_data = self.request.data['collections']
-
         lsi_celery_task.delay(collection_data, modeling_options, user.id)
         return Response(status=200)
 
@@ -54,9 +52,7 @@ class TopicModelViewSet(viewsets.ModelViewSet):
     def hdp_model_topics(self, request, pk=None):
         user = self.request.user
         modeling_options = self.request.data['options']
-
         collection_data = self.request.data['collections']
-
         hdp_celery_task.delay(collection_data, modeling_options, user.id)
         return Response(status=200)
 
@@ -67,7 +63,6 @@ class TopicModelViewSet(viewsets.ModelViewSet):
             topic_group = grab_topic_tuple_sets_for_topic_modeling_group(topic_id)
         except Exception:
             return Response(status=403, data='Topic was not found, please login or try another topic')
-
         csv_response = create_csv_from_topics_list(create_topic_list(topic_group))
         return csv_response
 

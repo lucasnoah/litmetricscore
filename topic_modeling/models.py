@@ -8,6 +8,8 @@ class TopicModelGroup(models.Model):
     input_data = models.TextField()
     collections = models.ManyToManyField(CorpusItemCollection)
     created = models.DateTimeField(auto_now_add=True)
+    method = models.CharField(max_length=30, default='lda')
+    options = models.TextField()
 
 
 class Topic(models.Model):
