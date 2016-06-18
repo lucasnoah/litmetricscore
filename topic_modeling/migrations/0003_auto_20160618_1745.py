@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('core', '0003_corpusitemcollection_locked')
+        ('core', '0003_corpusitemcollection_locked'),
         ('topic_modeling', '0002_auto_20160614_0507'),
     ]
 
