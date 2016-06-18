@@ -34,6 +34,7 @@ class CorpusItemCollection(models.Model):
     user = models.ForeignKey(User)
     created = models.DateTimeField(auto_now_add=True)
     corpus_items = models.ManyToManyField(CorpusItem, blank=True)
+    locked = models.BooleanField(default=False)
 
 
 class CorpusItemFilter(models.Model):
@@ -76,6 +77,16 @@ class WordToken(models.Model):
     is_stopword = models.BooleanField(default=False)
     sentence = models.ForeignKey(Sentence)
     wordnet_id = models.IntegerField(default=0)
+
+
+class LockedWordToken(models.Model):
+    """
+    An alternative stripped down word token used for logging manually updated texts from the user.
+    """
+
+    collection = models.ForeignKey(CorpusItemCollection)
+    word = models.CharField(max_length=150)
+    token_index = models.IntegerField()
 
 
 class SentenceDependency(models.Model):

@@ -3,10 +3,11 @@ from core.serializers import *
 from core.models import *
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
-from core.document_processing import initial_document_dump
+from core.document_processing import initial_document_dump, save_locked_collection
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import *
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
+from core.document_processing import create_download_of_parsed_collection
 
 class TextFileViewSet(viewsets.ModelViewSet):
 
@@ -15,11 +16,8 @@ class TextFileViewSet(viewsets.ModelViewSet):
     parser_classes = (MultiPartParser, FormParser)
     permission_classes = (IsAuthenticated,)
 
-
     def create(self, request):
-        print self.request.user
         self.request.data['user'] = self.request.user.id
-        print self.request.data
         serializer = TextFileSerializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -27,19 +25,24 @@ class TextFileViewSet(viewsets.ModelViewSet):
         serializer.save()
 
         text_file = TextFile.objects.last()
+        print 'collection', self.request.data.get('collection'), self.request.data.get('collection') == 'true'
+        if not self.request.data.get('collection') == 'true':
+            #create a corpus item
+            corpus_item = CorpusItem.objects.create(
+                title=title,
+                user=text_file.user,
+                text_file=text_file,
+                public=False,
+                is_processing=True
+            )
 
-        #create a corpus item
-        corpus_item = CorpusItem.objects.create(
-            title = title,
-            user = text_file.user,
-            text_file =text_file,
-            public = False,
-            is_processing = True
-        )
+            corpus_item = CorpusItem.objects.last()
 
-        corpus_item = CorpusItem.objects.last()
+            initial_document_dump.delay(text_file.id, corpus_item.id)
 
-        initial_document_dump.delay(text_file.id, corpus_item.id)
+        else:
+            save_locked_collection(text_file, title=title)
+
         return Response(status=200)
 
 
@@ -60,7 +63,6 @@ class CorpusItemCollectionViewset(viewsets.ModelViewSet):
     serializer_class = CorpusItemCollectionSerializer
     queryset = CorpusItemCollection.objects.all()
     permission_classes = (IsAuthenticated,)
-
 
     def get_queryset(self):
         user = self.request.user
@@ -99,6 +101,13 @@ class CorpusItemCollectionViewset(viewsets.ModelViewSet):
 
         collection_serializer = CorpusItemCollectionSerializer(collection)
         return Response(status=200, data=collection_serializer.data)
+
+    @list_route(['POST'])
+    def export(self, request, pk=None):
+        collection = self.request.data.get('collection_id')
+        filter = self.request.data.get('filter')
+        print 'the filter', filter
+        return create_download_of_parsed_collection(collection, filter)
 
 
 class WordTokenViewSet(viewsets.ModelViewSet):

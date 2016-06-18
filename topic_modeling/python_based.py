@@ -7,6 +7,12 @@ from topic_modeling.models import *
 from django.conf import settings
 from topic_modeling.utils import chunk_bag_of_word_collection_by_char_string, chunk_bag_of_word_collection_by_chunk_size
 import json
+from sklearn.decomposition import TruncatedSVD
+from sklearn.feature_extraction.text import TfidfVectorizer
+import numpy as np
+from litmetricscore.celery import app
+
+
 
 # gather words to be modeled as a list of words
 
@@ -57,7 +63,6 @@ def create_lda(dictionary, corpus, num_topics, update_every, passes, *args, **kw
     lda = LdaModel(corpus=corpus, id2word=dictionary, num_topics=num_topics, update_every=update_every, passes=passes,
                    iterations=iterations, gamma_threshold=gamma_threshold, minimum_probability=minimum_probability,
                    alpha=alpha, chunksize=chunksize)
-
     return lda
 
 
@@ -100,6 +105,11 @@ def compute_lsi_model(corpus, dictionary, num_topics):
 def return_lda_topics(lda, number_of_topics):
     return lda.print_topics(number_of_topics)
 
+def create_mallet_model(corpus, dictionary, num_topics):
+    model = gensim.models.wrappers.LdaMallet(settings.BASE_DIR + '/topic_modeling/mallet_source/mallet-2.0.7/bin/mallet', corpus=corpus, num_topics=num_topics,
+                                             id2word=dictionary)
+    return model
+
 
 class LdaHandler(object):
     """
@@ -121,9 +131,8 @@ class LdaHandler(object):
     def train_hdp_model(self, options):
         self.hdp_model = create_hdp(self.dictionary, self.corpus, **options)
 
-    def compute_lsi(self, num_topics):
-        self.lsi_model = compute_lsi_model(self.corpus, self.dictionary, num_topics)
-
+    def train_mallet_model(self, num_topics):
+        self.mallet_model = create_mallet_model(self.corpus, self.dictionary, num_topics)
 
 ###HELPER FUNCTIONS FOR CELERY TEST###
 
@@ -134,15 +143,15 @@ def grab_tokens_for_corpus_item(id):
 
 def grab_initial_bof_query_set_with_filers_from_view(collection_data):
     collection_bof_list = []
-    print collection_data
     for collection in collection_data:
         # grab list of id's for corpus items in collection
         list_of_corpus_items_ids_in_collection = [c.get('id') for c in collection['items']]
         # grabs a list of token lists
         document_token_list = [grab_tokens_for_corpus_item(id) for id in list_of_corpus_items_ids_in_collection]
-        print collection['filter']
         if collection['filter']['name'] == 'default':
             collection['filter'] = settings.DEFAULT_FILTER
+        elif collection['filter']['name'] == 'none':
+            collection['filter'] = settings.NONE_FILTER
         collection_bof_list.append((document_token_list, collection['filter']))
     return collection_bof_list
 
@@ -175,15 +184,23 @@ def build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data, 
     for topic in topics:
         new_topic = Topic.objects.create(topic_model_group=topic_group)
         # topic_group.
-        for topic_tuple in topic[1]:
-            TopicTuple.objects.create(
-                word=topic_tuple[0],
-                weight=topic_tuple[1],
-                topic=new_topic
-            )
+        if method == 'mallet':
+            for topic_tuple in topic:
+                print topic_tuple
+                TopicTuple.objects.create(
+                    word=topic_tuple[1],
+                    weight=topic_tuple[0],
+                    topic=new_topic
+                )
+        else:
+            for topic_tuple in topic[1]:
+                TopicTuple.objects.create(
+                    word=topic_tuple[0],
+                    weight=topic_tuple[1],
+                    topic=new_topic
+                )
 
     return topic_group
-
 
 def add_collections_to_topic_group(topic_group, collections):
     collections_objects = [CorpusItemCollection.objects.get(pk=c['id']) for c in collections]
@@ -192,7 +209,12 @@ def add_collections_to_topic_group(topic_group, collections):
 
 
 ######TOPIC MODELING CELERY TASK######
-from litmetricscore.celery import app
+
+def return_filtered_documents(words_and_filters):
+    filtered_docs = []
+    for tup in words_and_filters:
+        filtered_docs += apply_filter_to_collection(tup)
+    return filtered_docs
 
 
 @app.task()
@@ -204,9 +226,7 @@ def topic_modeling_celery_task(collection_data, options, user, *args, **kwargs):
     # list of tuples containing a (list of docs, filter)
 
     # loop through words with filters, apply the filters and return that to a bag of words list to send to gensim.
-    filtered_docs = []
-    for tup in words_and_filters:
-        filtered_docs += apply_filter_to_collection(tup)
+    filtered_docs = return_filtered_documents(words_and_filters)
 
     # handle chunk by count case
     if options['chunking'] == "count":
@@ -239,17 +259,70 @@ def topic_modeling_celery_task(collection_data, options, user, *args, **kwargs):
     handler.create_dictionary()
     handler.create_corpus()
     handler.train_lda_model(options['numTopics'], 2, options['numPasses'], options)
-
+    handler.lda_model.top_topics(handler.corpus, options['numTopics'])
     topics = handler.lda_model.show_topics(num_topics=options['numTopics'], num_words=10, log=False, formatted=False)
-
     # create output models
     topic_group = build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data, 'lda', options)
     # relate collections to topic group
+
+
     add_collections_to_topic_group(topic_group, collection_data)
 
     # email upon completion
 
     return topics
+
+@app.task()
+def mallet_celery_task(collection_data, options, user, *args, **kwargs):
+    # get user from user id
+    user = User.objects.get(pk=user)
+
+    words_and_filters = grab_initial_bof_query_set_with_filers_from_view(collection_data)
+    # list of tuples containing a (list of docs, filter)
+
+    # loop through words with filters, apply the filters and return that to a bag of words list to send to gensim.
+    filtered_docs = return_filtered_documents(words_and_filters)
+
+    # handle chunk by count case
+    if options['chunking'] == "count":
+        chunked_words_bags = []
+        for bag in filtered_docs:
+            chunked_words_bags += chunk_bag_of_word_collection_by_chunk_size(bag, options['chunk_size'])
+
+    # handle chunk by breakchar string
+    if options['chunking'] == 'breakword':
+        chunked_words_bags = []
+        for bag in filtered_docs:
+            chunked_words_bags += chunk_bag_of_word_collection_by_char_string(bag, options['breakword'])
+
+    # handle no chunking
+    if options['chunking'] == 'none':
+        chunked_words_bags = []
+        for bag in filtered_docs:
+            chunked_words_bags.append(bag)
+
+    # turn the tokens into words with the lemmatization and wordnet addition options
+    bag_of_docs_to_send_to_gensim = []
+    for bag in chunked_words_bags:
+        if options['wordNetSense']:
+            bag_of_docs_to_send_to_gensim.append(tag_words_with_wordsense_id(bag, options['lemmas']))
+        else:
+            bag_of_docs_to_send_to_gensim.append(return_untagged_queryset_as_word_list(bag, options['lemmas']))
+
+    # set up and execute gensim modeling
+    handler = LdaHandler(bag_of_docs_to_send_to_gensim)
+    handler.create_dictionary()
+    handler.create_corpus()
+    handler.train_mallet_model(options['numTopics'])
+    topics = handler.mallet_model.show_topics(num_topics=options['numTopics'], log=False, formatted=False)
+    # create output models
+    topic_group = build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data, 'mallet', options)
+    # relate collections to topic group
+    add_collections_to_topic_group(topic_group, collection_data)
+
+    # email upon completion
+
+
 
 
 @app.task()
@@ -306,10 +379,25 @@ def hdp_celery_task(collection_data, options, user):
     # email upon completion
     return topics
 
+
+
+def kClosestTerms(k,term,transformer,model):
+
+    index = transformer.vocabulary_[term]
+
+    model = np.dot(model,model.T)
+
+    closestTerms = {}
+    for i in range(len(model)):
+        closestTerms[transformer.get_feature_names()[i]] = model[index][i]
+
+    sortedList = sorted(closestTerms , key= lambda l : closestTerms[l])
+    return sortedList[::-1][0:k]
+
 @app.task()
 def lsi_celery_task(collection_data, options, user):
     user = User.objects.get(pk=user)
-
+    print collection_data
     words_and_filters = grab_initial_bof_query_set_with_filers_from_view(collection_data)
     # list of tuples containing a (list of docs, filter)
 
@@ -344,18 +432,25 @@ def lsi_celery_task(collection_data, options, user):
         else:
             bag_of_docs_to_send_to_gensim.append(return_untagged_queryset_as_word_list(bag, options['lemmas']))
 
+    stringed_docs = []
+    for doc in bag_of_docs_to_send_to_gensim:
+        stringed_docs.append(" ".join([x.lower() for x in doc]))
+
     # set up and execute gensim modeling
-    handler = LdaHandler(bag_of_docs_to_send_to_gensim)
-    handler.create_dictionary()
-    handler.create_corpus()
-    handler.compute_lsi(num_topics=options['num_topics'])
 
-    topics = handler.lsi_model.show_topics(formatted=False)
-
-    # create output models
-    topic_group = build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data, 'lsi', options)
-    # relate collections to topic group
-    add_collections_to_topic_group(topic_group, collection_data)
-
-    # email upon completion
-    return topics
+    transformer = TfidfVectorizer()
+    tfidf = transformer.fit_transform(stringed_docs)
+    num_components = 2
+    if len(stringed_docs) < 2:
+        num_components = 1
+    svd = TruncatedSVD(n_components=num_components)
+    lsa = svd.fit_transform(tfidf.T)
+    terms = kClosestTerms(15, options['query_term'], transformer, lsa)
+    LsiResult(
+        user=user,
+        results=json.dumps(terms),
+        query_term=options['query_term']
+    ).save()
+    result = LsiResult.objects.last()
+    result
+    return terms

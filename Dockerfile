@@ -60,6 +60,7 @@ RUN pip install redis
 RUN pip install sendgrid-django
 RUN pip install pytz
 RUN pip install flower
+RUN pip install sklearn
 
 # Define working directory.
 WORKDIR /data

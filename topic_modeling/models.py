@@ -33,5 +33,18 @@ class TopicTuple(models.Model):
         return self.word + ' | ' + str(self.weight)
 
 
+class LsiResult(models.Model):
+    """
+    Represents the return results and query options for a an LSI query.
+    """
+
+    query_term = models.CharField(max_length=200)
+    results = models.TextField()
+    user = models.ForeignKey(User)
+    collections = models.ManyToManyField(CorpusItemCollection)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return str(self.created)
 
 

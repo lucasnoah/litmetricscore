@@ -1,13 +1,16 @@
 import factory
 from utils import create_topic_list, grab_topic_tuple_sets_for_topic_modeling_group, create_csv_from_topics_list, \
     chunk_bag_of_word_collection_by_chunk_size, chunk_bag_of_word_collection_by_char_string
-from topic_modeling.python_based import topic_modeling_celery_task, hdp_celery_task, lsi_celery_task
+from topic_modeling.python_based import topic_modeling_celery_task, hdp_celery_task, lsi_celery_task, \
+    grab_initial_bof_query_set_with_filers_from_view, return_filtered_documents, mallet_celery_task
+from topic_modeling.models import TopicModelGroup, Topic
 from core.models import TextFile, CorpusItem, WordToken, CorpusItemCollection
 from unittest import TestCase
 from django.contrib.auth.models import User
 from os.path import abspath
 from core.sentence_parsers import SentenceHandler
 import json
+import pprint
 from django.conf import settings
 
 
@@ -133,13 +136,20 @@ class TestPythonBasedModeling(TestCase):
         options = {
 
             "chunking": "count",
-            "chunk_size": 2,
+            "chunk_size":  400,
             "breakword": "breakword",
-            "numPasses": 1,
+            "numPasses": 10,
             "numTopics": 10,
             "wordNetSense": True,
             "lemmas": True
         }
+
+
+        ####TEST MALLET###
+        mallet_celery_task(collection_data, options, self.user.id)
+        topic_group = TopicModelGroup.objects.last()
+        topics = Topic.objects.filter(topic_model_group=topic_group)
+        self.assertEquals(len(topics), 10)
 
         self.assertEquals(len(topic_modeling_celery_task(collection_data, options, self.user.id)), 10)
         options['chunking'] = 'none'
@@ -176,8 +186,9 @@ class TestPythonBasedModeling(TestCase):
             "numTopics": 10,
             "wordNetSense": True,
             "lemmas": True,
-            "num_topics" : 100
+            "num_topics": 100,
+            "query_term": 'area'
         }
         topics = lsi_celery_task(collection_data, options, self.user.id)
-        self.assertEquals(len(topics), 2)
+        self.assertEquals(len(topics), 5)
 

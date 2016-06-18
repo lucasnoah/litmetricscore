@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from core.models import *
-from topic_modeling.python_based import topic_modeling_celery_task, hdp_celery_task, lsi_celery_task
+from topic_modeling.python_based import topic_modeling_celery_task, hdp_celery_task, lsi_celery_task, mallet_celery_task
 from topic_modeling.utils import grab_topic_tuple_sets_for_topic_modeling_group, create_topic_list,\
     create_csv_from_topics_list
 import json
@@ -54,6 +54,14 @@ class TopicModelViewSet(viewsets.ModelViewSet):
         modeling_options = self.request.data['options']
         collection_data = self.request.data['collections']
         hdp_celery_task.delay(collection_data, modeling_options, user.id)
+        return Response(status=200)
+
+    @list_route(['POST'])
+    def mallet_model_topics(self, request, pk=None):
+        user = self.request.user
+        modeling_options = self.request.data['options']
+        collection_data = self.request.data['collections']
+        mallet_celery_task.delay(collection_data, modeling_options, user.id)
         return Response(status=200)
 
     @list_route(['POST'])

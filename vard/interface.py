@@ -1,6 +1,6 @@
 import os
 from subprocess import *
-from litmetricscore.settings import BASE_DIR
+from django.conf import settings
 
 def jarWrapper(*args):
     process = Popen(['java', '-Xms8G', '-jar']+list(args), stdout=PIPE, stderr=PIPE)
@@ -16,6 +16,7 @@ def jarWrapper(*args):
     ret.remove('')
     return ret
 
+BASE_DIR = settings.BASE_DIR
 #programs args
 jar_file = BASE_DIR + '/vard/vard_source/1clui.jar'
 in_file_test = BASE_DIR + '/test_book.txt'

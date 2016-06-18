@@ -32,7 +32,6 @@ services:
       - corenlp:corenlp
       - db
     depends_on:
-      - migration
       - db
     working_dir: /code
     volumes:
@@ -71,26 +70,6 @@ services:
       - ./secrets.env
     depends_on:
       - celery
-
-  migration:
-    build: .
-    command: bash -c 'dockerize -wait tcp://db:5432 && python manage.py makemigrations && python manage.py migrate'
-    links:
-      - db
-    depends_on:
-      - db
-    env_file:
-      - ./secrets.env
-
-  migration2:
-    build: .
-    command: bash -c 'dockerize -wait tcp://db:5432 && python manage.py makemigrations topic_modeling && python manage.py migrate topic_modeling'
-    links:
-      - db
-    depends_on:
-      - db
-    env_file:
-      - ./secrets.env
 
   redis:
     image: redis

@@ -174,7 +174,7 @@ DEFAULT_FILTER = {"name": "default",
                               'PRP$', 'RB', 'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD',
                               'VBG', 'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB'],
                       "stopwords": (
-                      "i,me,my,myself,we,our,ours,ourselves,you,your,yours,yourself,yourselves,he,him,his,"
+                      "I,i,me,my,myself,we,our,ours,ourselves,you,your,yours,yourself,yourselves,he,him,his,"
                       "himself,she,her,hers,herself,it,its,itself,they,them,their,theirs,themselves,what,"
                       "which,who,whom,this,that,these,those,am,is,are,was,were,be,been,being,have,has,had,"
                       "having,do,does,did ,doing,a,an,the,and,but,if,or,because,as,until,while,of,at,by,"
@@ -182,5 +182,16 @@ DEFAULT_FILTER = {"name": "default",
                       "from,up,down,in,out,on,off,over,under,again,further,then,once,here,there,when,"
                       "where,why,how,all,any,both,each,few,more,most,other,some,such,no,nor,not,only,own,"
                       "same,so,than,too,very,s,t,can,will,just,don,should,now")
+                  }
+                  }
+NONE_FILTER = {"name": "none",
+                  "filter_data": {
+                      "lemma": False,
+                      "ner": False,
+                      "pos": ['CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS',
+                              'MD', 'NN', 'NNS', 'NNP', 'NNPS', 'PDT', 'PDT', 'POS', 'PRP',
+                              'PRP$', 'RB', 'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD',
+                              'VBG', 'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB'],
+                      "stopwords": ()
                   }
                   }
