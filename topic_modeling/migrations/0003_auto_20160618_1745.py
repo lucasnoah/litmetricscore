@@ -31,6 +31,6 @@ class Migration(migrations.Migration):
             model_name='topicmodelgroup',
             name='options',
             field=models.TextField(default=None),
-            preserve_default=False,
+            preserve_default=True,
         ),
     ]
