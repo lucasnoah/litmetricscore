@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='topicmodelgroup',
             name='options',
-            field=models.TextField(default=None),
+            field=models.TextField(default=""),
             preserve_default=True,
         ),
     ]
