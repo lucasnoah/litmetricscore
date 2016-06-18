@@ -74,4 +74,14 @@ services:
   redis:
     image: redis
 
+  migration:
+    build: .
+    command: bash -c 'dockerize -wait tcp://db:5432 && python manage.py makemigrations && python manage.py migrate -y'
+    links:
+      - db
+    depends_on:
+      - db
+    env_file:
+      - ./secrets.env
+
 
