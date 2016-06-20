@@ -16,6 +16,17 @@ def send_document_done_email(user, doc_name):
               "litmetrics <info@litmetrics.com", [user.email])
 
 
+def split_document_into_line_chunks(text_file, title, chunk_size):
+    """
+    Split text file into chunks of the length chunk_size
+    :param text_file:
+    :param chunk_size:
+    :return:
+    """
+    lines = text_file.readlines()
+    chunks = [{"lines": lines[x:x+chunk_size], "title": title + "_" + str(x)} for x in xrange(0, len(lines), chunk_size)]
+    return chunks
+
 @app.task()
 def initial_document_dump(text_file_id, corpus_item_id):
     """
@@ -31,34 +42,46 @@ def initial_document_dump(text_file_id, corpus_item_id):
     #open up the file and read it into memory
     #do var and return text in memory
     #print text_file.file
+    """
+
     try:
         document_text = do_vard(text_file.file)
         print 'vard is over'
     except Exception as e:
         print e
         document_text = text_file.file.read()
+    """
+    chunks = split_document_into_line_chunks(text_file.file, corpus_item.title, 400)
 
-    #send the file to be parsed by server
-    try:
-        parsed_text = parse_core_nlp_text(document_text)
-    except Exception as e:
-        print e
-    print 'parsing done'
-
-    #loop through the output and dump it in the database
-    sentences = parsed_text['sentences']
+    sentences = []
+    print 'how many chunks',  len(chunks)
+    for chunk in chunks:
+        print chunk['title']
+        #send the file to be parsed by server
+        try:
+            chunk_text = do_vard("".join(chunk['lines']))
+            parsed_text = parse_core_nlp_text(chunk_text)
+            sentences += parsed_text['sentences']
+        except Exception as e:
+            print e
 
     #deal with bulk save
     words_to_save = []
 
     for sentence in sentences:
-        handler = SentenceHandler(sentence, corpus_item)
+        handler = SentenceHandler(sentence,
+                                  corpus_item)
         words_to_save = words_to_save + handler.process_sentence()
+        if len(words_to_save) > 5000:
+            print 'saving'
+            WordToken.objects.bulk_create(words_to_save)
+            words_to_save = []
 
-    print len(words_to_save)
-
+    if len(words_to_save) > 0:
+        WordToken.objects.bulk_create(words_to_save)
     #buld save the words
-    WordToken.objects.bulk_create(words_to_save)
+    #WordToken.objects.bulk_create(words_to_save)
+    print 'tokens are saved'
 
     #set the corpus items processing status to done
     corpus_item.is_processing = False
@@ -67,7 +90,7 @@ def initial_document_dump(text_file_id, corpus_item_id):
     #send of an email to notify the user
     send_document_done_email(corpus_item.text_file.user, corpus_item.title)
 
-    print 'corpus has been processed'
+    print 'done'
 
 def grab_consolidated_filtered_list_from_collection_and_filter(corpus_collection, filter):
     # grab the word tokens
@@ -103,8 +126,7 @@ def dump_collection_to_plain_text(corpus_collection, filter):
     return output_string
 
 def parse_locked_text_upload(text_file):
-
-    parsed_text = text_file.read().split(" ")
+    parsed_text = text_file.file.read().split(" ")
     return parsed_text
 
 def save_locked_collection(text_file, title):

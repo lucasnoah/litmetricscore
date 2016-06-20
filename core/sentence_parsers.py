@@ -54,10 +54,7 @@ def create_and_save_word_token(token_dict, sentence):
         word=token_dict['word'],
         is_stopword=check_if_word_is_stopword(token_dict['word']),
         sentence=sentence
-
-
     )
-    print wt
     return wt
 
 

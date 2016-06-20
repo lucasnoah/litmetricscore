@@ -28,17 +28,17 @@ output_type = 'Plain'
 output_file_dir = BASE_DIR + '/vard/vard_resource/'
 memory_arg = '-Xms2G -Xmx4G'
 
-def do_vard(input_file):
+def do_vard(doc_text):
     """
     runs a text file through vard for spelling normalization
     :param input_file:
     :return:
     """
-    output_file = output_file_dir + input_file.name
+    output_file = output_file_dir + 'the_output.txt'
     open(os.path.dirname(os.path.realpath(__file__)) + '/vard_resource/input_file.txt', 'w').close()
 
     with open(os.path.dirname(os.path.realpath(__file__)) + '/vard_resource/input_file.txt', 'w') as f:
-        f.write(input_file.file.read())
+        f.write(doc_text)
         f.close()
 
     input_file_path = os.path.dirname(os.path.realpath(__file__)) + '/vard_resource/input_file.txt'

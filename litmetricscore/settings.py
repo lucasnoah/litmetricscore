@@ -184,6 +184,7 @@ DEFAULT_FILTER = {"name": "default",
                       "same,so,than,too,very,s,t,can,will,just,don,should,now")
                   }
                   }
+
 NONE_FILTER = {"name": "none",
                   "filter_data": {
                       "lemma": False,
