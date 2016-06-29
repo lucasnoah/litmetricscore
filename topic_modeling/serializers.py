@@ -35,3 +35,18 @@ class TopicModelGroupSerializer(serializers.ModelSerializer):
             'method': instance.method,
             'options': instance.options
         }
+
+class LsiResultSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = LsiResult
+
+    def to_representation(self, instance):
+
+        return {
+            "query_term": instance.query_term,
+             "results": json.loads(instance.results),
+             "collections": CorpusItemCollectionSerializer(instance.collections.all(), many=True).data,
+             "created": instance.created
+        }
+

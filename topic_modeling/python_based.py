@@ -122,6 +122,7 @@ class LdaHandler(object):
     def create_dictionary(self):
         self.dictionary = create_gensim_dictionary_object(self.texts)
 
+
     def create_corpus(self):
         self.corpus = create_corpus_from_word_lists_and_dictionary(self.dictionary, self.texts)
 
@@ -167,8 +168,11 @@ def apply_filter_to_collection(collection_tuple):
     document_token_bag = []
     for l in collection_token_lists:
         qs = select_only_desired_pos_tags(l, filter['filter_data']['pos'])
-        qs = filter_out_named_entities(qs, filter['filter_data']['ner'])
+        print 'with Stopwords', len(qs)
         qs = filter_out_stopwords(qs, filter['filter_data']['stopwords'])
+        print 'without stopwords', len(qs)
+        qs = filter_out_named_entities(qs, filter['filter_data']['ner'])
+
         document_token_bag.append(list(qs))
     return document_token_bag
 
@@ -397,7 +401,7 @@ def kClosestTerms(k,term,transformer,model):
 @app.task()
 def lsi_celery_task(collection_data, options, user):
     user = User.objects.get(pk=user)
-    print collection_data
+    print 'collection data ', collection_data, type(collection_data)
     words_and_filters = grab_initial_bof_query_set_with_filers_from_view(collection_data)
     # list of tuples containing a (list of docs, filter)
 
@@ -437,20 +441,25 @@ def lsi_celery_task(collection_data, options, user):
         stringed_docs.append(" ".join([x.lower() for x in doc]))
 
     # set up and execute gensim modeling
-
-    transformer = TfidfVectorizer()
-    tfidf = transformer.fit_transform(stringed_docs)
-    num_components = 2
-    if len(stringed_docs) < 2:
-        num_components = 1
-    svd = TruncatedSVD(n_components=num_components)
-    lsa = svd.fit_transform(tfidf.T)
-    terms = kClosestTerms(15, options['query_term'], transformer, lsa)
+    try:
+        transformer = TfidfVectorizer()
+        tfidf = transformer.fit_transform(stringed_docs)
+        num_components = 2
+        if len(stringed_docs) < 2:
+            num_components = 1
+        svd = TruncatedSVD(n_components=num_components)
+        lsa = svd.fit_transform(tfidf.T)
+        terms = kClosestTerms(15, options['search_query'], transformer, lsa)
+    except Exception as e:
+        print e
+        terms = ["No results found for search"]
     LsiResult(
         user=user,
         results=json.dumps(terms),
-        query_term=options['query_term']
+        query_term=options['search_query']
     ).save()
     result = LsiResult.objects.last()
-    result
-    return terms
+    collections = [CorpusItemCollection.objects.get(pk=c.get('id')) for c in collection_data]
+    for collection in collections:
+        result.collections.add(collection)
+    result.save()

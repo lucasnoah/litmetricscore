@@ -74,6 +74,13 @@ class TopicModelViewSet(viewsets.ModelViewSet):
         csv_response = create_csv_from_topics_list(create_topic_list(topic_group))
         return csv_response
 
+    @list_route(['GET'])
+    def lsi_results(self, request, pk=None):
+        results = LsiResult.objects.filter(user=self.request.user)
+        serializer = LsiResultSerializer(results, many=True)
+        return Response(status=200, data=serializer.data)
+
+
 
 
 

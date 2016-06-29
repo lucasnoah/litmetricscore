@@ -38,26 +38,11 @@ def initial_document_dump(text_file_id, corpus_item_id):
     print 'start corpus proccessing'
     text_file = TextFile.objects.get(pk=text_file_id)
     corpus_item = CorpusItem.objects.get(pk=corpus_item_id)
-
-    #open up the file and read it into memory
-    #do var and return text in memory
-    #print text_file.file
-    """
-
-    try:
-        document_text = do_vard(text_file.file)
-        print 'vard is over'
-    except Exception as e:
-        print e
-        document_text = text_file.file.read()
-    """
     chunks = split_document_into_line_chunks(text_file.file, corpus_item.title, 400)
-
     sentences = []
-    print 'how many chunks',  len(chunks)
+
     for chunk in chunks:
-        print chunk['title']
-        #send the file to be parsed by server
+        #send the file to have spelling normalized and have it parsed by the corenlp server
         try:
             chunk_text = do_vard("".join(chunk['lines']))
             parsed_text = parse_core_nlp_text(chunk_text)
@@ -65,22 +50,19 @@ def initial_document_dump(text_file_id, corpus_item_id):
         except Exception as e:
             print e
 
-    #deal with bulk save
+    # save all the parsed sentences and word tokens to the db
     words_to_save = []
-
     for sentence in sentences:
         handler = SentenceHandler(sentence,
                                   corpus_item)
         words_to_save = words_to_save + handler.process_sentence()
         if len(words_to_save) > 5000:
-            print 'saving'
             WordToken.objects.bulk_create(words_to_save)
             words_to_save = []
 
     if len(words_to_save) > 0:
         WordToken.objects.bulk_create(words_to_save)
-    #buld save the words
-    #WordToken.objects.bulk_create(words_to_save)
+
     print 'tokens are saved'
 
     #set the corpus items processing status to done
@@ -90,7 +72,6 @@ def initial_document_dump(text_file_id, corpus_item_id):
     #send of an email to notify the user
     send_document_done_email(corpus_item.text_file.user, corpus_item.title)
 
-    print 'done'
 
 def grab_consolidated_filtered_list_from_collection_and_filter(corpus_collection, filter):
     # grab the word tokens
@@ -161,7 +142,6 @@ def create_download_of_parsed_collection(corpus_collection, filter):
     response['Content-Disposition'] = 'attachment; filename=' + '"' + filename + '"'
     body = dump_collection_to_plain_text(corpus_collection, filter)
     response.write(body)
-    print 'sending resonse', response
     return response
 
 

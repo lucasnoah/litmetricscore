@@ -26,6 +26,7 @@ def filter_out_stopwords(qs, stopword_set):
     """
     stopword_set.replace(" ", "")
     stopword_set = stopword_set.split(",")
+    print len(stopword_set)
     return qs.exclude(original_text__in=stopword_set)
 
 
