@@ -28,7 +28,7 @@ class CorpusItem(models.Model):
 
 class CorpusItemCollection(models.Model):
     """
-    represents a collection of corpus items
+    represents a collection of corpus items grouped together for processing
     """
     title = models.CharField(max_length=100)
     user = models.ForeignKey(User)
@@ -40,7 +40,7 @@ class CorpusItemCollection(models.Model):
 class CorpusItemFilter(models.Model):
 
     """
-    represents a field to be filtered out of the corpus Item
+    Describes how a CorpusItemCollection should be filtered before being sent to modeling
     """
 
     user = models.ForeignKey(User)
@@ -81,7 +81,7 @@ class WordToken(models.Model):
 
 class LockedWordToken(models.Model):
     """
-    An alternative stripped down word token used for logging manually updated texts from the user.
+    An alternative stripped down word token used for logging manually uploaded collections from the user.
     """
 
     collection = models.ForeignKey(CorpusItemCollection)

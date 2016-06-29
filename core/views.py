@@ -11,12 +11,22 @@ from core.document_processing import create_download_of_parsed_collection
 
 class TextFileViewSet(viewsets.ModelViewSet):
 
+    """
+    Text files represent a plain uploaded text without any processing at all. Use this endpoint to upload .txt files.
+    """
+
     serializer_class = TextFileSerializer
     queryset = TextFile.objects.all()
     parser_classes = (MultiPartParser, FormParser)
     permission_classes = (IsAuthenticated,)
 
     def create(self, request):
+        """
+        Upload a text file and create a corresponding corpus collection. This also starts the celery task to begin
+        processing the the uploading document.
+        :param request:
+        :return:
+        """
         self.request.data['user'] = self.request.user.id
         serializer = TextFileSerializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)
@@ -25,7 +35,6 @@ class TextFileViewSet(viewsets.ModelViewSet):
         serializer.save()
 
         text_file = TextFile.objects.last()
-        print 'collection', self.request.data.get('collection'), self.request.data.get('collection') == 'true'
         if not self.request.data.get('collection') == 'true':
             #create a corpus item
             corpus_item = CorpusItem.objects.create(
@@ -48,17 +57,27 @@ class TextFileViewSet(viewsets.ModelViewSet):
 
 class CorpusItemViewSet(viewsets.ModelViewSet):
 
+    """
+    Corpus Items represent the master PK for a processed text.  Each text you upload creates a corpus item and all
+    corresponding sentences and tokens are tied to this object.
+    """
+
     serializer_class = CorpusItemSerializer
     queryset = CorpusItem.objects.all()
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         user = self.request.user
-        print 'Im a pony'
         return CorpusItem.objects.filter(user=user)
 
 
 class CorpusItemCollectionViewset(viewsets.ModelViewSet):
+
+    """
+    The Corpus Item Collection represents a set of corpus items grouped together so that they can be sent to
+    the Topic Modeling methods as a single unit. Collections are oft paired with filters to help define custom token
+    sets to send to the topic modeling workers.
+    """
 
     serializer_class = CorpusItemCollectionSerializer
     queryset = CorpusItemCollection.objects.all()
@@ -69,6 +88,11 @@ class CorpusItemCollectionViewset(viewsets.ModelViewSet):
         return CorpusItemCollection.objects.filter(user=user)
 
     def create(self, request):
+        """
+        Create a collection and tag it with a user.
+        :param request:
+        :return:
+        """
 
         self.request.data['user'] = self.request.user.id
         c = CorpusItemCollectionSerializer(data=self.request.data)
@@ -80,6 +104,12 @@ class CorpusItemCollectionViewset(viewsets.ModelViewSet):
 
     @list_route(['POST'])
     def add_items(self, request, pk=None):
+        """
+        Add corpus items to a collection
+        :param request:
+        :param pk:
+        :return:
+        """
         corpus_items = CorpusItem.objects.filter(pk__in=self.request.data['corpusItems'])
         collection = CorpusItemCollection.objects.get(pk=self.request.data['corpusCollection'])
         for c in corpus_items:
@@ -88,11 +118,16 @@ class CorpusItemCollectionViewset(viewsets.ModelViewSet):
         collection = CorpusItemCollection.objects.get(pk=self.request.data['corpusCollection'])
         collection_serializer= CorpusItemCollectionSerializer(collection)
 
-
         return Response(status=201, data = collection_serializer.data)
 
     @list_route(['POST'])
     def remove_item(self, request, pk=None):
+        """
+        Remove a corpus item for the collection
+        :param request:
+        :param pk:
+        :return:
+        """
         item = CorpusItem.objects.get(pk=self.request.data['item'])
         collection = CorpusItemCollection.objects.get(pk=self.request.data['collection'])
         collection.corpus_items.remove(item)
@@ -104,6 +139,12 @@ class CorpusItemCollectionViewset(viewsets.ModelViewSet):
 
     @list_route(['POST'])
     def export(self, request, pk=None):
+        """
+        Export a filtered collection as a set of tokens separated by spaces in a .txt format.
+        :param request:
+        :param pk:
+        :return:
+        """
         collection = self.request.data.get('collection_id')
         filter = self.request.data.get('filter')
         print 'the filter', filter
@@ -112,6 +153,11 @@ class CorpusItemCollectionViewset(viewsets.ModelViewSet):
 
 class WordTokenViewSet(viewsets.ModelViewSet):
 
+    """
+    Word Tokens represent individual words that have been parsed by the Stanford coreNLP server. Each Word Token has a
+    variety of fields associated with it that can be used for filtering and other math functions.
+    """
+
     queryset = WordToken.objects.all()
     serializer_class = WordTokenSerializer
     pagination_class = LimitOffsetPagination
@@ -119,14 +165,18 @@ class WordTokenViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         corpus_id = self.request.query_params['corpus_id']
         corpus_item = CorpusItem.objects.get(pk=corpus_id)
-        print corpus_item
         qs = WordToken.objects.filter(sentence__corpus_item=corpus_item)
-        print qs
         return qs
 
 
     @detail_route(['PATCH'])
     def update_token(self, request, pk=None):
+        """
+        Update fields in a single Word token
+        :param request:
+        :param pk:
+        :return:
+        """
         token = WordToken.objects.get(pk=pk)
         if token.sentence.corpus_item.user == self.request.user:
             token.pos = self.request.data['pos']
@@ -145,6 +195,10 @@ class WordTokenViewSet(viewsets.ModelViewSet):
 
 
 class CorpusItemFilterViewSet(viewsets.ModelViewSet):
+
+    """
+    Filters represent a set of filtering objects to apply to a CorpusItemCollection
+    """
 
     queryset = CorpusItemFilter.objects.all()
     serializer_class = CorpusItemFilterSerializer

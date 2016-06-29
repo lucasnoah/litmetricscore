@@ -61,6 +61,8 @@ RUN pip install sendgrid-django
 RUN pip install pytz
 RUN pip install flower
 RUN pip install sklearn
+RUN pip install django-rest-swagger
+
 
 # Define working directory.
 WORKDIR /data

@@ -18,6 +18,11 @@ import json
 
 class TopicModelViewSet(viewsets.ModelViewSet):
 
+    """
+    Endpoints for sending Corpus Item Collections to topic modeling endpoints and for representing topic modeling
+    results
+    """
+
     queryset = TopicModelGroup.objects.all()
     serializer_class = TopicModelGroupSerializer
     permission_classes = (IsAuthenticated,)
@@ -29,19 +34,34 @@ class TopicModelViewSet(viewsets.ModelViewSet):
 
     @list_route(['POST'])
     def model_topics(self, request, pk=None):
+        """
+        Send a collection to be modeled via the standard Gensim Lda Model
+        ---
+        parameters_strategy: replace
+        omit_parameters:
+            - path
+        parameters:
+            - name: collections
+              description: a list of collection id's and filters
+              required: true
+              type: list
 
-        print self.request.data
+        consumes:
+            - application/json
+
+        """
+
         user = self.request.user
         modeling_options = self.request.data['options']
-
         collection_data = self.request.data['collections']
-
         topic_modeling_celery_task.delay(collection_data,modeling_options, user.id)
-
         return Response(status=200)
 
     @list_route(['POST'])
     def lsi_model_topics(self, request, pk=None):
+        """
+        Find related words using gensim LSI for any given CorpusItemCollection and a search term.
+        """
         user = self.request.user
         modeling_options = self.request.data['options']
         collection_data = self.request.data['collections']
@@ -50,6 +70,9 @@ class TopicModelViewSet(viewsets.ModelViewSet):
 
     @list_route(['POST'])
     def hdp_model_topics(self, request, pk=None):
+        """
+        Use the gensim HDP automatic Model to create a set of topics from a collection
+        """
         user = self.request.user
         modeling_options = self.request.data['options']
         collection_data = self.request.data['collections']
@@ -58,6 +81,9 @@ class TopicModelViewSet(viewsets.ModelViewSet):
 
     @list_route(['POST'])
     def mallet_model_topics(self, request, pk=None):
+        """
+        Use mallet to create a set of topics.
+        """
         user = self.request.user
         modeling_options = self.request.data['options']
         collection_data = self.request.data['collections']
@@ -66,6 +92,9 @@ class TopicModelViewSet(viewsets.ModelViewSet):
 
     @list_route(['POST'])
     def download_topics_csv(self, request, pk=None):
+        """
+        Download the topic modeling results in a a .csv format for a single set of topic modeling results.
+        """
         topic_id = request.data['topic_id']
         try:
             topic_group = grab_topic_tuple_sets_for_topic_modeling_group(topic_id)
@@ -76,6 +105,9 @@ class TopicModelViewSet(viewsets.ModelViewSet):
 
     @list_route(['GET'])
     def lsi_results(self, request, pk=None):
+        """
+        List all the LSI results for a particular user.
+        """
         results = LsiResult.objects.filter(user=self.request.user)
         serializer = LsiResultSerializer(results, many=True)
         return Response(status=200, data=serializer.data)
