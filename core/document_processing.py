@@ -28,14 +28,14 @@ def split_document_into_line_chunks(text_file, title, chunk_size):
     return chunks
 
 @app.task()
-def initial_document_dump(text_file_id, corpus_item_id):
+def initial_document_dump(text_file_id, corpus_item_id, vard_options):
     """
     pos tags and loads a corpus-item into the db from and uploaded text file
     :param text_file:
     :param text_file_title:
     :return:
     """
-    print 'start corpus proccessing'
+    print 'start corpus proccessing', vard_options
     text_file = TextFile.objects.get(pk=text_file_id)
     corpus_item = CorpusItem.objects.get(pk=corpus_item_id)
     chunks = split_document_into_line_chunks(text_file.file, corpus_item.title, 400)
@@ -44,7 +44,14 @@ def initial_document_dump(text_file_id, corpus_item_id):
     for chunk in chunks:
         #send the file to have spelling normalized and have it parsed by the corenlp server
         try:
-            chunk_text = do_vard("".join(chunk['lines']))
+            if vard_options['vard']:
+                chunk_text = do_vard("".join(chunk['lines']), vard_options)
+                print 'doing vard'
+            else:
+                chunk_text = "".join(chunk['lines'])
+                print 'not doing vard'
+
+            print 'chunk text type', type(chunk_text)
             parsed_text = parse_core_nlp_text(chunk_text)
             sentences += parsed_text['sentences']
         except Exception as e:

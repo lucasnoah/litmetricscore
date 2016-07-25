@@ -13,6 +13,14 @@ class CorpusItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CorpusItem
 
+    def to_representation(self, instance):
+        return {
+            'title':  instance.title,
+            'public': instance.public,
+            'is_processing': instance.is_processing,
+            'token_count': WordToken.objects.filter(sentence__corpus_item=instance).count()
+        }
+
 class CorpusItemCollectionSerializer(serializers.ModelSerializer):
 
     class Meta:

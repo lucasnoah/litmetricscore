@@ -47,7 +47,16 @@ class TextFileViewSet(viewsets.ModelViewSet):
 
             corpus_item = CorpusItem.objects.last()
 
-            initial_document_dump.delay(text_file.id, corpus_item.id)
+            #pass vard options and plug in defaults where necisarry
+            vard_options = {}
+            if self.request.data['vard'] == 'true':
+                vard_options['vard'] = True
+                vard_options['fScore'] = self.request.data['fScore']
+                vard_options['threshold'] = self.request.data['threshold']
+            else:
+                vard_options['vard'] = False
+
+            initial_document_dump.delay(text_file.id, corpus_item.id, vard_options)
 
         else:
             save_locked_collection(text_file, title=title)

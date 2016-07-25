@@ -21,14 +21,14 @@ BASE_DIR = settings.BASE_DIR
 jar_file = BASE_DIR + '/vard/vard_source/1clui.jar'
 in_file_test = BASE_DIR + '/test_book.txt'
 setup_folder = BASE_DIR + '/vard/vard_source'
-threshold_int = '1'
-f_score = '70'
+threshold_int = '30'
+f_score = '1'
 input_file = ''
 output_type = 'Plain'
 output_file_dir = BASE_DIR + '/vard/vard_resource/'
 memory_arg = '-Xms2G -Xmx4G'
 
-def do_vard(doc_text):
+def do_vard(doc_text, vard_options):
     """
     runs a text file through vard for spelling normalization
     :param input_file:
@@ -42,7 +42,8 @@ def do_vard(doc_text):
         f.close()
 
     input_file_path = os.path.dirname(os.path.realpath(__file__)) + '/vard_resource/input_file.txt'
-
+    threshold_int = vard_options['threshold']
+    f_score = vard_options['fScore']
 
     args = [jar_file, setup_folder, threshold_int, f_score, input_file_path, output_type, output_file]
 
