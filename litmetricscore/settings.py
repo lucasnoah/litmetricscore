@@ -174,7 +174,7 @@ DEFAULT_FILTER = {"name": "default",
                               'MD', 'NN', 'NNS', 'NNP', 'NNPS', 'PDT', 'PDT', 'POS', 'PRP',
                               'PRP$', 'RB', 'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD',
                               'VBG', 'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB'],
-                      "stopwords": [
+                      "stopwords": (
                           "i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours",
                           "yourself", "yourselves", "he",
                           "him",
@@ -234,7 +234,7 @@ DEFAULT_FILTER = {"name": "default",
                           "Thine", "doth", "Doth", "bee", "Bee", "doth", "Doth", "have", "Have", "yet", "Yet", "Durst",
                           "durst", "Doth",
                           "doth",
-                          "Hath", "hath", "Hast", "hast"]
+                          "Hath", "hath", "Hast", "hast")
                   }
                   }
 
@@ -246,6 +246,6 @@ NONE_FILTER = {"name": "none",
                            'MD', 'NN', 'NNS', 'NNP', 'NNPS', 'PDT', 'PDT', 'POS', 'PRP',
                            'PRP$', 'RB', 'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD',
                            'VBG', 'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB'],
-                   "stopwords": ["BREAKWORDZZZA"]
+                   "stopwords": ("BREAKWORDZZZA")
                }
                }
