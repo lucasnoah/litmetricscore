@@ -246,6 +246,6 @@ NONE_FILTER = {"name": "none",
                            'MD', 'NN', 'NNS', 'NNP', 'NNPS', 'PDT', 'PDT', 'POS', 'PRP',
                            'PRP$', 'RB', 'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD',
                            'VBG', 'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB'],
-                   "stopwords": ()
+                   "stopwords": ("BREAKWORDZZZA",)
                }
                }
