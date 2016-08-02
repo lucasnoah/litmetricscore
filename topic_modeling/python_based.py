@@ -165,7 +165,7 @@ def apply_filter_to_collection(collection_tuple):
     """
     collection_token_lists = collection_tuple[0]
     filter = collection_tuple[1]
-    print 'filter check', filter, filter['stopwords']
+    print 'filter check', filter, filter['filter_data']['stopwords']
     document_token_bag = []
     for l in collection_token_lists:
         qs = select_only_desired_pos_tags(l, filter['filter_data']['pos'])
