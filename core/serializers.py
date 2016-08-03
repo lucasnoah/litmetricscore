@@ -18,7 +18,8 @@ class CorpusItemSerializer(serializers.ModelSerializer):
             'title':  instance.title,
             'public': instance.public,
             'is_processing': instance.is_processing,
-            'token_count': WordToken.objects.filter(sentence__corpus_item=instance).count()
+            'token_count': WordToken.objects.filter(sentence__corpus_item=instance).count(),
+            'id': instance.id
         }
 
 class CorpusItemCollectionSerializer(serializers.ModelSerializer):
