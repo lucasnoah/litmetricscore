@@ -82,13 +82,15 @@ def initial_document_dump(text_file_id, corpus_item_id, vard_options):
 
 def grab_consolidated_filtered_list_from_collection_and_filter(corpus_collection, filter):
     # grab the word tokens
-
+    print 'in grab consolidated', corpus_collection, filter
     if filter['name'] == 'default':
-        filter['filter_data'] = settings.DEFAULT_FILTER
+        filter = settings.DEFAULT_FILTER
     if filter['name'] == 'none':
-        filter['filter_data'] = settings.NONE_FILTER
+        print 'none filter'
+        filter = settings.NONE_FILTER
 
     corpus_items = CorpusItem.objects.filter(corpusitemcollection=corpus_collection)
+    print 'number of corpus items', len(corpus_items)
     sentence_lists = [Sentence.objects.filter(corpus_item=corpus_item) for corpus_item in corpus_items]
     token_lists = []
     for sentence_list in sentence_lists:
@@ -100,7 +102,9 @@ def grab_consolidated_filtered_list_from_collection_and_filter(corpus_collection
         qs = filter_out_named_entities(qs, filter['filter_data']['ner'])
         qs = filter_out_stopwords(qs, filter['filter_data']['stopwords'])
         filtered_tokens += list(qs)
+    print 'len of filtered tokens', len(filtered_tokens)
     return filtered_tokens
+
 
 def dump_collection_to_plain_text(corpus_collection, filter):
     """
@@ -109,13 +113,17 @@ def dump_collection_to_plain_text(corpus_collection, filter):
     :param filter:
     :return:
     """
+    print 'dumping now', type(corpus_collection), type(filter)
     tokens = grab_consolidated_filtered_list_from_collection_and_filter(corpus_collection, filter)
+    print 'len tokens', len(tokens)
     output_string = " ".join([token.original_text for token in tokens])
     return output_string
+
 
 def parse_locked_text_upload(text_file):
     parsed_text = text_file.file.read().split(" ")
     return parsed_text
+
 
 def save_locked_collection(text_file, title):
     CorpusItemCollection(

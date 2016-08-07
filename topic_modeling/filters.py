@@ -4,7 +4,13 @@ def select_only_desired_pos_tags(qs, pos_tag_list):
     """
     remove unwanted pos tags from query set
     """
+    missing_list = []
+    for item in qs:
+        if item.pos not in pos_tag_list:
+            missing_list.append(item.pos)
     filtered = qs.filter(pos__in=pos_tag_list)
+    if len(set(missing_list)) > 0:
+        print set(missing_list)
     return filtered
 
 
@@ -24,8 +30,6 @@ def filter_out_stopwords(qs, stopword_set):
     """
     remove stopwords from queryset
     """
-
-    print len(stopword_set)
     return qs.exclude(original_text__in=stopword_set)
 
 

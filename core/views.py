@@ -7,7 +7,7 @@ from core.document_processing import initial_document_dump, save_locked_collecti
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import *
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
-from core.document_processing import create_download_of_parsed_collection
+from core.document_processing import create_download_of_parsed_collection, grab_consolidated_filtered_list_from_collection_and_filter
 
 class TextFileViewSet(viewsets.ModelViewSet):
 
@@ -154,10 +154,10 @@ class CorpusItemCollectionViewset(viewsets.ModelViewSet):
         :param pk:
         :return:
         """
-        collection = self.request.data.get('collection_id')
+        print 'request data', self.request.data
+        collection = self.request.data.get('collection')
         filter = self.request.data.get('filter')
-        print 'the filter', filter
-        return create_download_of_parsed_collection(collection, filter)
+        return create_download_of_parsed_collection(collection['id'], filter)
 
 
 class WordTokenViewSet(viewsets.ModelViewSet):
