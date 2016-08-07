@@ -170,7 +170,6 @@ def apply_filter_to_collection(collection_tuple):
         qs = select_only_desired_pos_tags(l, filter['filter_data']['pos'])
         qs = filter_out_stopwords(qs, filter['filter_data']['stopwords'])
         qs = filter_out_named_entities(qs, filter['filter_data']['ner'])
-
         document_token_bag.append(list(qs))
     return document_token_bag
 
