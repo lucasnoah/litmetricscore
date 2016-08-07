@@ -265,7 +265,7 @@ def topic_modeling_celery_task(collection_data, options, user, *args, **kwargs):
     handler.create_corpus()
     handler.train_lda_model(options['numTopics'], 2, options['numPasses'], options)
     handler.lda_model.top_topics(handler.corpus, options['numTopics'])
-    topics = handler.lda_model.show_topics(num_topics=options['numTopics'], num_words=10, log=False, formatted=False)
+    topics = handler.lda_model.show_topics(num_topics=options['numTopics'], num_words=options['top_n'], log=False, formatted=False)
     # create output models
     topic_group = build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data, 'lda', options)
     # relate collections to topic group
@@ -319,7 +319,7 @@ def mallet_celery_task(collection_data, options, user, *args, **kwargs):
     handler.create_dictionary()
     handler.create_corpus()
     handler.train_mallet_model(options['numTopics'])
-    topics = handler.mallet_model.show_topics(num_topics=options['numTopics'], log=False, formatted=False)
+    topics = handler.mallet_model.show_topics(num_topics=options['numTopics'], log=False, formatted=False, num_words=options['top_n'])
     # create output models
     topic_group = build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data, 'mallet', options)
     # relate collections to topic group
