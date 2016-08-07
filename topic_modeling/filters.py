@@ -4,14 +4,8 @@ def select_only_desired_pos_tags(qs, pos_tag_list):
     """
     remove unwanted pos tags from query set
     """
-    filtered_tokens = []
-    for token in qs:
-        if token.pos in pos_tag_list:
-            filtered_tokens.append(qs)
-    #filtered = qs.filter(pos__in=pos_tag_list)
-
-    return filtered_tokens
-
+    filtered = qs.filter(pos__in=pos_tag_list)
+    return filtered
 
 def filter_out_named_entities(qs, named_entity_choice):
     """
