@@ -31,6 +31,7 @@ def split_document_into_line_chunks(text_file, title, chunk_size):
 def initial_document_dump(text_file_id, corpus_item_id, vard_options):
     """
     pos tags and loads a corpus-item into the db from and uploaded text file
+    pos tags and loads a corpus-item into the db from and uploaded text file
     :param text_file:
     :param text_file_title:
     :return:
@@ -46,12 +47,9 @@ def initial_document_dump(text_file_id, corpus_item_id, vard_options):
         try:
             if vard_options['vard']:
                 chunk_text = do_vard("".join(chunk['lines']), vard_options)
-                print 'doing vard'
             else:
                 chunk_text = "".join(chunk['lines'])
-                print 'not doing vard'
 
-            print 'chunk text type', type(chunk_text)
             parsed_text = parse_core_nlp_text(chunk_text)
             sentences += parsed_text['sentences']
         except Exception as e:

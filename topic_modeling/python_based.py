@@ -165,13 +165,10 @@ def apply_filter_to_collection(collection_tuple):
     """
     collection_token_lists = collection_tuple[0]
     filter = collection_tuple[1]
-    print 'filter check', filter, filter['filter_data']['stopwords']
     document_token_bag = []
     for l in collection_token_lists:
         qs = select_only_desired_pos_tags(l, filter['filter_data']['pos'])
-        print 'with Stopwords', len(qs)
         qs = filter_out_stopwords(qs, filter['filter_data']['stopwords'])
-        print 'without stopwords', len(qs)
         qs = filter_out_named_entities(qs, filter['filter_data']['ner'])
 
         document_token_bag.append(list(qs))
@@ -226,7 +223,7 @@ def return_filtered_documents(words_and_filters):
 def topic_modeling_celery_task(collection_data, options, user, *args, **kwargs):
     # get user from user id
     user = User.objects.get(pk=user)
-
+    print 'collection data', collection_data
     words_and_filters = grab_initial_bof_query_set_with_filers_from_view(collection_data)
     # list of tuples containing a (list of docs, filter)
 
@@ -402,7 +399,6 @@ def kClosestTerms(k,term,transformer,model):
 @app.task()
 def lsi_celery_task(collection_data, options, user):
     user = User.objects.get(pk=user)
-    print 'collection data ', collection_data, type(collection_data)
     words_and_filters = grab_initial_bof_query_set_with_filers_from_view(collection_data)
     # list of tuples containing a (list of docs, filter)
 

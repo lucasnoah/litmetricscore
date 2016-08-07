@@ -107,6 +107,12 @@ class SentenceHandler(object):
                 tokens.append(create_and_save_word_token(token, self.sentence))
             return tokens
 
+    def tag_tokens_with_wordnet_sense(self, tokens):
+        sentence = rebuild_sentence_from_tokens(tokens)
+        for token in tokens:
+            token.wordnet_id = set_disambiguated_wordnet_lemma_for_word(sentence, token.original_text)
+        return tokens
+
     def save_sentence_dependecy_parses(self, parse_type_string):
         for parse in self.sentence_dict[parse_type_string]:
             create_and_save_sentence_dependency(parse_type_string, parse, self.sentence)
@@ -114,7 +120,9 @@ class SentenceHandler(object):
 
     def process_sentence(self):
         self.create_sentence()
-        return self.create_bulk_list_of_word_tokens()
+        tokens = self.create_bulk_list_of_word_tokens()
+        tagged_tokens = self.tag_tokens_with_wordnet_sense(tokens)
+        return tagged_tokens
         #for pt in parse_types:
         #    self.save_sentence_dependecy_parses(pt)
 
@@ -135,7 +143,6 @@ def rebuild_sentence_from_tokens(tokens):
         for item in tokens:
             if item.index == counter + 1:
                 sentence = tokens[counter].original_text + tokens[counter].after + sentence
-
         counter = counter +  1
     return sentence
 

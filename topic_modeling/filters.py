@@ -15,7 +15,12 @@ def filter_out_named_entities(qs, named_entity_choice):
     """
 
     if named_entity_choice:
-        return qs.exclude(ner__in=ner_list)
+        filtered = []
+        for token in qs:
+            if token.ner not in ner_list:
+                filtered.append(token)
+
+        return filtered
 
     else:
         return qs
@@ -37,6 +42,7 @@ def tag_words_with_wordsense_id(bag_of_tokens, use_lemmas):
     Take a query_set and return its wordnet sense tagged output with an option to use either to word or the lemma
      as a base
     """
+
     if use_lemmas:
         return [(token.lemma + str(token.wordnet_id)) for token in bag_of_tokens]
 
