@@ -31,7 +31,8 @@ class CorpusItemCollectionSerializer(serializers.ModelSerializer):
         return {
             "id" : instance.id,
             "title" : instance.title,
-            "items": CorpusItemSerializer(instance.corpus_items, many=True).data
+            "items": CorpusItemSerializer(instance.corpus_items, many=True).data,
+            "locked": instance.locked
         }
 
 class WordTokenSerializer(serializers.ModelSerializer):

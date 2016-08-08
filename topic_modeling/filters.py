@@ -17,7 +17,6 @@ def filter_out_named_entities(qs, named_entity_choice):
         for token in qs:
             if token.ner not in ner_list:
                 filtered.append(token)
-
         return filtered
 
     else:

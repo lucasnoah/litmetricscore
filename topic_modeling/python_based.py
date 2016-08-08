@@ -156,7 +156,6 @@ def grab_initial_bof_query_set_with_filers_from_view(collection_data):
         collection_bof_list.append((document_token_list, collection['filter']))
     return collection_bof_list
 
-
 def apply_filter_to_collection(collection_tuple):
     """
     Applies the filters to the collection/filter tuples and returns a list of words for gensim.
@@ -172,6 +171,81 @@ def apply_filter_to_collection(collection_tuple):
         qs = filter_out_named_entities(qs, filter['filter_data']['ner'])
         document_token_bag.append(list(qs))
     return document_token_bag
+
+
+class CollectionParser:
+
+    def __init__(self, collection_id, filter):
+        self.collection = CorpusItemCollection.objects.get(pk=collection_id)
+        self.lock_status = self.collection.locked
+        self.filter = self.get_filter_dict(filter)
+        self.wordnet_status = True
+        self.token_lists = []
+        self.tokens = []
+        self.bow = []
+        self.grab_and_filter_tokens()
+        self.get_bow()
+
+    def get_filter_dict(self, filter):
+        """
+        Handle filling out the data for the standard filters
+        :param filter:
+        :return:
+        """
+        if filter['name'] == 'default':
+            return settings.DEFAULT_FILTER
+        elif filter['name'] == 'none':
+            return settings.NONE_FILTER
+        else:
+            return filter
+
+    def apply_filter_to_collection(self):
+        document_token_bag = []
+        for l in self.token_lists:
+            qs = select_only_desired_pos_tags(l, self.filter['filter_data']['pos'])
+            qs = filter_out_stopwords(qs, self.filter['filter_data']['stopwords'])
+            qs = filter_out_named_entities(qs, self.filter['filter_data']['ner'])
+            document_token_bag += list(qs)
+        return document_token_bag
+
+    def grab_and_filter_tokens(self):
+        """
+        differentiate between locked and normal collections and return filtered tokens
+        :return:
+        """
+
+        if self.lock_status:
+            self.tokens = LockedWordToken.objects.filter(collection=self.collection)
+
+        else:
+            # grab the items for the collection
+            print self.collection.corpus_items.all()
+            self.token_lists = [grab_tokens_for_corpus_item(item.id) for item in self.collection.corpus_items.all()]
+            self.tokens = self.apply_filter_to_collection()
+
+    def get_bow(self):
+        return self.bow
+
+    def do_wordnet_tagging(self, token, out_token):
+        """
+        Tag tokens with wordnet id's
+        :param token:
+        :param out_token:
+        :return:
+        """
+        if self.wordnet_status:
+            return out_token + token.wordnet_id
+
+    def get_bow(self):
+        """
+        Converts to a list of strings and deals with lemmatization and wordnet id tagging.
+        :return:
+        """
+        if self.filter['lemmas']:
+            self.bow = [self.do_wordnet_tagging(token, token.lemma) for token in self.tokens]
+        else:
+            self.bow = [self.do_wordnet_tagging(token, token.original_text) for token in self.tokens]
+
 
 
 def build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data, method, options):
@@ -220,15 +294,28 @@ def return_filtered_documents(words_and_filters):
 
 @app.task()
 def topic_modeling_celery_task(collection_data, options, user, *args, **kwargs):
+    """
+    Async tosk to do gensim based topic modeling.
+    :param collection_data:
+    :param options:
+    :param user:
+    :param args:
+    :param kwargs:
+    :return:
+    """
     # get user from user id
     user = User.objects.get(pk=user)
-    print 'collection data', collection_data
     words_and_filters = grab_initial_bof_query_set_with_filers_from_view(collection_data)
     # list of tuples containing a (list of docs, filter)
-
     # loop through words with filters, apply the filters and return that to a bag of words list to send to gensim.
-    filtered_docs = return_filtered_documents(words_and_filters)
+    old_filtered_docs = return_filtered_documents(words_and_filters)
 
+    filtered_docs = []
+    for item in collection_data:
+        tokens = CollectionParser(item['id'], item['filter']).get_bow()
+        filtered_docs.append(tokens)
+
+    print 'old and new', len(old_filtered_docs), len(filtered_docs), old_filtered_docs, filtered_docs
     # handle chunk by count case
     if options['chunking'] == "count":
         chunked_words_bags = []
@@ -248,12 +335,16 @@ def topic_modeling_celery_task(collection_data, options, user, *args, **kwargs):
             chunked_words_bags.append(bag)
 
     # turn the tokens into words with the lemmatization and wordnet addition options
+
     bag_of_docs_to_send_to_gensim = []
+    """
     for bag in chunked_words_bags:
         if options['wordNetSense']:
             bag_of_docs_to_send_to_gensim.append(tag_words_with_wordsense_id(bag, options['lemmas']))
         else:
             bag_of_docs_to_send_to_gensim.append(return_untagged_queryset_as_word_list(bag, options['lemmas']))
+    """
+
 
     # set up and execute gensim modeling
     handler = LdaHandler(bag_of_docs_to_send_to_gensim)
