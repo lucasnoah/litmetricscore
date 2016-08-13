@@ -4,6 +4,10 @@ import jsonrpclib
 
 
 def parse_core_nlp_text(string):
+    """"
+    :param string:
+    :return:
+    """
     url = settings.CORE_NLP_SERVER_URL
     headers = {'content-type': 'application/json'}
     try:
