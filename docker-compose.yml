@@ -40,6 +40,8 @@ services:
 
     env_file:
       - ./secrets.env
+    environment:
+      - SENDGRIDKEY=${SENDGRIDKEY}
 
 
   celery:
@@ -53,6 +55,8 @@ services:
       - web
     env_file:
       - ./secrets.env
+    environment:
+      - SENDGRIDKEY=${SENDGRIDKEY}
 
   flower:
     build: .
@@ -83,5 +87,4 @@ services:
       - db
     env_file:
       - ./secrets.env
-
 

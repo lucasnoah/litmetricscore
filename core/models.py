@@ -76,7 +76,7 @@ class WordToken(models.Model):
     word = models.CharField(max_length=100)
     is_stopword = models.BooleanField(default=False)
     sentence = models.ForeignKey(Sentence)
-    wordnet_id = models.IntegerField(default=0)
+    wordnet_id = models.CharField(max_length=50)
 
 
 class LockedWordToken(models.Model):

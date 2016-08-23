@@ -62,6 +62,11 @@ RUN pip install pytz
 RUN pip install flower
 RUN pip install sklearn
 RUN pip install django-rest-swagger
+RUN pip install nltk
+RUN python -m nltk.downloader wordnet
+RUN python -m nltk.downloader punkt
+RUN python -m nltk.downloader averaged_perceptron_tagger
+
 
 
 # Define working directory.

@@ -20,6 +20,7 @@ class TopicSerializer(serializers.ModelSerializer):
             "tuples": TopicTupleSerializer(TopicTuple.objects.filter(topic=instance), many=True).data
         }
 
+
 class TopicModelGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -28,13 +29,14 @@ class TopicModelGroupSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
 
         return {
-            'id': instance.id,
-            'created': instance.created,
-            'topics': TopicSerializer(Topic.objects.filter(topic_model_group=instance), many=True).data,
-            'collections': CorpusItemCollectionSerializer(instance.collections.all(), many=True).data,
-            'method': instance.method,
-            'options': instance.options
+            "id": instance.id,
+            "created": instance.created,
+            "topics": TopicSerializer(Topic.objects.filter(topic_model_group=instance), many=True).data,
+            "collections": CorpusItemCollectionSerializer(instance.collections.all(), many=True).data,
+            "method": instance.method,
+            "options": json.loads(instance.options)
         }
+
 
 class LsiResultSerializer(serializers.ModelSerializer):
 
@@ -49,4 +51,3 @@ class LsiResultSerializer(serializers.ModelSerializer):
              "collections": CorpusItemCollectionSerializer(instance.collections.all(), many=True).data,
              "created": instance.created
         }
-

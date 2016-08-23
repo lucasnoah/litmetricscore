@@ -164,7 +164,11 @@ CORE_NLP_SERVER_URL = "http://corenlp:8081/rpc"
 CORS_ORIGIN_ALLOW_ALL = True
 
 EMAIL_BACKEND = "sgbackend.SendGridBackend"
-SENDGRID_API_KEY = ""
+try:
+    SENDGRID_API_KEY = os.environ.get('SENDGRIDKEY')
+except Exception:
+    SENDGRID_API_KEY = os.environ.get('SENDGRIDKEY')
+print 'sendgrid key', SENDGRID_API_KEY
 
 DEFAULT_FILTER = {"name": "default",
                   "filter_data": {

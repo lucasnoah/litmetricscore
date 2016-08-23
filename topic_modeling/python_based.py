@@ -11,13 +11,17 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 from litmetricscore.celery import app
-
+from django.core.mail import send_mail
 
 
 # gather words to be modeled as a list of words
 
 # create a gensim dictionary object out of all the words. Gensim dictionary accepts a list of texts, which is really
 # just a list of tokenized words.
+
+def send_document_done_email(user):
+    send_mail("litmetrics Topic modeling has finished processing",
+              "litmetrics <info@litmetrics.com", [user.email])
 
 
 def create_gensim_dictionary_object(word_lists):
@@ -59,6 +63,8 @@ def create_lda(dictionary, corpus, num_topics, update_every, passes, *args, **kw
     minimum_probability = kwargs.get('minimum_probability') or 0.01
     #
     chunksize = kwargs.get('chunksize') or 2000
+
+    #random_state = int(kwargs.get('random_state')) or None
 
     lda = LdaModel(corpus=corpus, id2word=dictionary, num_topics=num_topics, update_every=update_every, passes=passes,
                    iterations=iterations, gamma_threshold=gamma_threshold, minimum_probability=minimum_probability,
@@ -356,7 +362,9 @@ def topic_modeling_celery_task(collection_data, options, user, *args, **kwargs):
     handler = LdaHandler(chunked_words_bags)
     handler.create_dictionary()
     handler.create_corpus()
-    handler.train_lda_model(options['numTopics'], 2, options['numPasses'], options)
+    update_every = options.get('update_every') or 2
+    del options['update_every']
+    handler.train_lda_model(options['numTopics'], update_every, options['numPasses'], options)
     handler.lda_model.top_topics(handler.corpus, options['numTopics'])
     topics = handler.lda_model.show_topics(num_topics=options['numTopics'], num_words=options['top_n'], log=False, formatted=False)
     # create output models
@@ -366,6 +374,10 @@ def topic_modeling_celery_task(collection_data, options, user, *args, **kwargs):
     add_collections_to_topic_group(topic_group, collection_data)
 
     # email upon completion
+    try:
+        send_document_done_email
+    except Exception as e:
+        print e
 
     return topics
 
@@ -419,6 +431,10 @@ def mallet_celery_task(collection_data, options, user, *args, **kwargs):
     add_collections_to_topic_group(topic_group, collection_data)
 
     # email upon completion
+    try:
+        send_document_done_email(user)
+    except Exception as e:
+        print e
 
 
 @app.task()
@@ -470,6 +486,10 @@ def hdp_celery_task(collection_data, options, user):
     add_collections_to_topic_group(topic_group, collection_data)
 
     # email upon completion
+    try:
+        send_document_done_email(user)
+    except Exception as e:
+        print e
     return topics
 
 
@@ -557,3 +577,6 @@ def lsi_celery_task(collection_data, options, user):
     for collection in collections:
         result.collections.add(collection)
     result.save()
+
+
+

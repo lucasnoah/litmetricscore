@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import *
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from core.document_processing import create_download_of_parsed_collection, grab_consolidated_filtered_list_from_collection_and_filter
+from core.paginators import TokenPagination
 
 class TextFileViewSet(viewsets.ModelViewSet):
 
@@ -59,7 +60,9 @@ class TextFileViewSet(viewsets.ModelViewSet):
             initial_document_dump.delay(text_file.id, corpus_item.id, vard_options)
 
         else:
-            save_locked_collection(text_file, title=title)
+            print "saving locked collection"
+            save_locked_collection.delay(text_file.id, title=title)
+
 
         return Response(status=200)
 
@@ -79,6 +82,13 @@ class CorpusItemViewSet(viewsets.ModelViewSet):
         user = self.request.user
         return CorpusItem.objects.filter(user=user)
 
+    @list_route(['GET'])
+    def view_corpus(self, pk=None):
+
+        corpus_item_id = self.request.data.get('coprus_item')
+        sentences = Sentence.objects.filter(corpus_item__id=corpus_item_id)
+
+        pass
 
 class CorpusItemCollectionViewset(viewsets.ModelViewSet):
 
@@ -169,7 +179,7 @@ class WordTokenViewSet(viewsets.ModelViewSet):
 
     queryset = WordToken.objects.all()
     serializer_class = WordTokenSerializer
-    pagination_class = LimitOffsetPagination
+    pagination_class = TokenPagination
 
     def get_queryset(self):
         corpus_id = self.request.query_params['corpus_id']
@@ -218,3 +228,14 @@ class CorpusItemFilterViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         instance = serializer.save(user=self.request.user)
+
+    @list_route(['POST'])
+    def save_filter(self, pk=None):
+
+        filter = CorpusItemFilter.objects.get(pk=self.request.data.get('id'))
+        if self.request.user.id != filter.user.id:
+            return Response(status=403)
+        else:
+            filter.filter_data = self.request.data.get('filter_data')
+            filter.save()
+            return Response(status=200)

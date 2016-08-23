@@ -68,14 +68,15 @@ def initial_document_dump(text_file_id, corpus_item_id, vard_options):
     if len(words_to_save) > 0:
         WordToken.objects.bulk_create(words_to_save)
 
-    print 'tokens are saved'
-
     #set the corpus items processing status to done
     corpus_item.is_processing = False
     corpus_item.save()
 
     #send of an email to notify the user
-    send_document_done_email(corpus_item.text_file.user, corpus_item.title)
+    try:
+        send_document_done_email(corpus_item.text_file.user, corpus_item.title)
+    except Exception as e:
+        print e
 
 
 def grab_consolidated_filtered_list_from_collection_and_filter(corpus_collection, filter):
@@ -122,8 +123,11 @@ def parse_locked_text_upload(text_file):
     parsed_text = text_file.file.read().split(" ")
     return parsed_text
 
+@app.task()
+def save_locked_collection(text_file_id, title):
 
-def save_locked_collection(text_file, title):
+    text_file = TextFile.objects.get(pk=text_file_id)
+
     CorpusItemCollection(
         title=title,
         user=text_file.user,
@@ -141,7 +145,6 @@ def save_locked_collection(text_file, title):
         ).save()
         counter += 1
     return collection
-
 
 
 def create_download_of_parsed_collection(corpus_collection, filter):

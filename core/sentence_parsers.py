@@ -149,4 +149,9 @@ def rebuild_sentence_from_tokens(tokens):
 
 def set_disambiguated_wordnet_lemma_for_word(rebuilt_sentence, token_text):
     s = simple_lesk(rebuilt_sentence, token_text)
-    return s.lemmas()[0].name()
+    try:
+        output = s.lemmas()[0].synset().name()
+    except Exception as e:
+        output = '0'
+        print e
+    return str(output)
