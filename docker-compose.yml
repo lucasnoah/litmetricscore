@@ -37,7 +37,6 @@ services:
     volumes:
       - .:/code
       - ./media:/media
-
     env_file:
       - ./secrets.env
     environment:

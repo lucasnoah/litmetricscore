@@ -333,6 +333,7 @@ def topic_modeling_celery_task(collection_data, options, user, *args, **kwargs):
     # get user from user id
     user = User.objects.get(pk=user)
 
+    print "starting modeling"
     # get tokens from collection and parse with filters
     filtered_docs = []
     for item in collection_data:
@@ -358,6 +359,8 @@ def topic_modeling_celery_task(collection_data, options, user, *args, **kwargs):
         for bag in filtered_docs:
             chunked_words_bags.append(bag)
 
+    print 'word bags are all chucked up in x chunks:', len(chunked_words_bags)
+
     # set up and execute gensim modeling
     handler = LdaHandler(chunked_words_bags)
     handler.create_dictionary()
@@ -370,12 +373,13 @@ def topic_modeling_celery_task(collection_data, options, user, *args, **kwargs):
     # create output models
     topic_group = build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data, 'lda', options)
     # relate collections to topic group
+    print 'I got topic groups', topic_group
 
     add_collections_to_topic_group(topic_group, collection_data)
 
     # email upon completion
     try:
-        send_document_done_email
+        send_document_done_email(user)
     except Exception as e:
         print e
 
