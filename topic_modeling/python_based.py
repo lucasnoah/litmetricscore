@@ -225,7 +225,9 @@ class CollectionParser:
 
         else:
             # grab the items for the collection
+            print 'grabbing the token for modeling'
             self.token_lists = [grab_tokens_for_corpus_item(item.id) for item in self.collection.corpus_items.all()]
+            print 'filtering the tokens for modeling'
             self.tokens = self.apply_filter_to_collection()
 
     def get_bow(self):
@@ -248,6 +250,7 @@ class CollectionParser:
         Converts to a list of strings and deals with lemmatization and wordnet id tagging.
         :return:
         """
+        print 'making the bow'
         if self.filter['filter_data']['lemma'] and not self.lock_status:
             for token in self.tokens:
                 if type(token) == WordToken:
