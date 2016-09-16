@@ -260,6 +260,7 @@ class CollectionParser:
             if self.lock_status:
                 self.bow = [token.word for token in self.tokens]
             else:
+                print 'this is the wordnet tagging'
                 self.bow = [self.do_wordnet_tagging(token, token.original_text) for token in self.tokens]
 
 
