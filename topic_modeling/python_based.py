@@ -20,7 +20,7 @@ from django.core.mail import send_mail
 # just a list of tokenized words.
 
 def send_document_done_email(user):
-    send_mail("litmetrics Topic modeling has finished processing",
+    send_mail("Topic Model Done", "litmetrics Topic modeling has finished processing",
               "litmetrics <info@litmetrics.com", [user.email])
 
 
