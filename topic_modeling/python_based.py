@@ -252,8 +252,7 @@ class CollectionParser:
         """
         print 'making the bow'
         if self.filter['filter_data']['lemma'] and not self.lock_status:
-            for token in self.tokens:
-                self.bow = [self.do_wordnet_tagging(token, token.lemma) for token in self.tokens]
+            self.bow = [self.do_wordnet_tagging(token, token.lemma) for token in self.tokens]
 
         else:
             if self.lock_status:
