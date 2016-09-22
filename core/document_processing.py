@@ -48,7 +48,8 @@ def initial_document_dump(text_file_id, corpus_item_id, vard_options):
             if vard_options['vard']:
                 chunk_text = do_vard("".join(chunk['lines']), vard_options)
             else:
-                chunk_text = "".join(chunk['lines'].decode('utf-8','ignore').encode("utf-8"))
+                print 'chunk about to be decode'
+                chunk_text = "".join(chunk['lines']).decode('utf-8','ignore').encode("utf-8")
 
             parsed_text = parse_core_nlp_text(chunk_text)
             sentences += parsed_text['sentences']
