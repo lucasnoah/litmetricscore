@@ -181,16 +181,21 @@ def apply_filter_to_collection(collection_tuple):
 
 class CollectionParser:
 
-    def __init__(self, collection_id, filter):
+    def __init__(self, collection_id, filter, *args, **kwargs):
         self.collection = CorpusItemCollection.objects.get(pk=collection_id)
         self.lock_status = self.collection.locked
         self.filter = self.get_filter_dict(filter)
-        self.wordnet_status = True
+        wordnet_status = kwargs.get('wordnet_status')
+        if  wordnet_status == None:
+            wordnet_status = True
+        self.wordnet_status = wordnet_status
         self.token_lists = []
         self.tokens = []
         self.bow = []
         self.grab_and_filter_tokens()
         self.make_bow()
+
+        print self.filter['filter_data'], self.wordnet_status
 
     def get_filter_dict(self, filter):
         """
@@ -225,9 +230,7 @@ class CollectionParser:
 
         else:
             # grab the items for the collection
-            print 'grabbing the token for modeling'
             self.token_lists = [grab_tokens_for_corpus_item(item.id) for item in self.collection.corpus_items.all()]
-            print 'filtering the tokens for modeling'
             self.tokens = self.apply_filter_to_collection()
 
     def get_bow(self):
@@ -241,7 +244,7 @@ class CollectionParser:
         :return:
         """
         if self.wordnet_status:
-            return out_token + token.wordnet_id
+            return out_token + '-' + token.wordnet_id
         else:
             return out_token
 
@@ -250,7 +253,6 @@ class CollectionParser:
         Converts to a list of strings and deals with lemmatization and wordnet id tagging.
         :return:
         """
-        print 'making the bow'
         if self.filter['filter_data']['lemma'] and not self.lock_status:
             self.bow = [self.do_wordnet_tagging(token, token.lemma) for token in self.tokens]
 
@@ -258,7 +260,6 @@ class CollectionParser:
             if self.lock_status:
                 self.bow = [token.word for token in self.tokens]
             else:
-                print 'this is the wordnet tagging'
                 self.bow = [self.do_wordnet_tagging(token, token.original_text) for token in self.tokens]
 
 
@@ -280,13 +281,10 @@ def build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data, 
     )
 
     for topic in topics:
-        print 'umass topic', topic
-
         # topic_group.
         if method == 'mallet':
             new_topic = Topic.objects.create(topic_model_group=topic_group)
             for topic_tuple in topic:
-                print topic_tuple
                 TopicTuple.objects.create(
                     word=topic_tuple[1],
                     weight=topic_tuple[0],
@@ -338,14 +336,14 @@ def topic_modeling_celery_task(collection_data, options, user, *args, **kwargs):
     # get user from user id
     user = User.objects.get(pk=user)
 
-    print "starting modeling"
     # get tokens from collection and parse with filters
     filtered_docs = []
+    wordnet_status = options['wordNetSense']
     for item in collection_data:
-        tokens = CollectionParser(item['id'], item['filter']).get_bow()
+        # overide the collections filter wordnet status.  This should probably live somewhere else in the future.
+        tokens = CollectionParser(item['id'], item['filter'], wordnet_status=wordnet_status).get_bow()
         filtered_docs.append(tokens)
 
-    #print 'old and new', len(old_filtered_docs), len(filtered_docs), old_filtered_docs, filtered_docs
     # handle chunk by count case
     if options['chunking'] == "count":
         chunked_words_bags = []
@@ -364,8 +362,6 @@ def topic_modeling_celery_task(collection_data, options, user, *args, **kwargs):
         for bag in filtered_docs:
             chunked_words_bags.append(bag)
 
-    print 'word bags are all chucked up in x chunks:', len(chunked_words_bags)
-
     # set up and execute gensim modeling
     handler = LdaHandler(chunked_words_bags)
     handler.create_dictionary()
@@ -376,11 +372,8 @@ def topic_modeling_celery_task(collection_data, options, user, *args, **kwargs):
     handler.lda_model.top_topics(handler.corpus, options['numTopics'])
     topics = handler.lda_model.top_topics(handler.corpus, num_words=options['top_n'])
     # create output models
-    print 'the topics', topics
     topic_group = build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data, 'lda', options)
     # relate collections to topic group
-    print 'I got topic groups', topic_group
-
     add_collections_to_topic_group(topic_group, collection_data)
 
     # email upon completion
@@ -388,7 +381,6 @@ def topic_modeling_celery_task(collection_data, options, user, *args, **kwargs):
         send_document_done_email(user)
     except Exception as e:
         print e
-
     return topics
 
 @app.task()
@@ -408,7 +400,7 @@ def mallet_celery_task(collection_data, options, user, *args, **kwargs):
     # get collection tokens and filter them
     filtered_docs = []
     for item in collection_data:
-        tokens = CollectionParser(item['id'], item['filter']).get_bow()
+        tokens = CollectionParser(item['id'], item['filter'], wordnet_status=options['wordNetSense']).get_bow()
         filtered_docs.append(tokens)
 
     # handle chunk by count case
@@ -461,7 +453,7 @@ def hdp_celery_task(collection_data, options, user):
     # get tokens from collection and filter them
     filtered_docs = []
     for item in collection_data:
-        tokens = CollectionParser(item['id'], item['filter']).get_bow()
+        tokens = CollectionParser(item['id'], item['filter'], wordnet_status=options['wordNetSense']).get_bow()
         filtered_docs.append(tokens)
 
     # handle chunk by count case
@@ -539,7 +531,7 @@ def lsi_celery_task(collection_data, options, user):
     # get tokens from collections and filter them
     filtered_docs = []
     for item in collection_data:
-            tokens = CollectionParser(item['id'], item['filter']).get_bow()
+            tokens = CollectionParser(item['id'], item['filter'], options['wordNetSense']).get_bow()
             filtered_docs.append(tokens)
 
     # handle chunk by count case
