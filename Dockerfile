@@ -63,6 +63,7 @@ RUN pip install flower
 RUN pip install sklearn
 RUN pip install django-rest-swagger
 RUN pip install nltk
+RUN pip install pandas
 RUN python -m nltk.downloader wordnet
 RUN python -m nltk.downloader punkt
 RUN python -m nltk.downloader averaged_perceptron_tagger

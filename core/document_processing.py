@@ -102,9 +102,7 @@ def grab_consolidated_filtered_list_from_collection_and_filter(corpus_collection
         qs = filter_out_named_entities(qs, filter['filter_data']['ner'])
         qs = filter_out_stopwords(qs, filter['filter_data']['stopwords'])
         filtered_tokens += list(qs)
-    print 'len of filtered tokens', len(filtered_tokens)
     return filtered_tokens
-
 
 def dump_collection_to_plain_text(corpus_collection, filter):
     """

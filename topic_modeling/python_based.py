@@ -195,7 +195,6 @@ class CollectionParser:
         self.grab_and_filter_tokens()
         self.make_bow()
 
-        print self.filter['filter_data'], self.wordnet_status
 
     def get_filter_dict(self, filter):
         """
@@ -505,6 +504,7 @@ def kClosestTerms(k,term,transformer,model):
     :return:
     """
 
+    print 'running KclosestTerms'
     index = transformer.vocabulary_[term]
 
     model = np.dot(model,model.T)
@@ -514,6 +514,8 @@ def kClosestTerms(k,term,transformer,model):
         closestTerms[transformer.get_feature_names()[i]] = model[index][i]
 
     sortedList = sorted(closestTerms , key= lambda l : closestTerms[l])
+    print "sorted list in k closest terms"
+    print sortedList
     return sortedList[::-1][0:k]
 
 
