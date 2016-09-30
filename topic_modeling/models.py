@@ -18,6 +18,7 @@ class Topic(models.Model):
     """
 
     topic_model_group = models.ForeignKey(TopicModelGroup)
+    u_mass = models.FloatField(blank=True, null=True)
 
 
 class TopicTuple(models.Model):

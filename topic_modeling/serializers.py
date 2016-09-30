@@ -17,7 +17,8 @@ class TopicSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         return{
-            "tuples": TopicTupleSerializer(TopicTuple.objects.filter(topic=instance), many=True).data
+            "tuples": TopicTupleSerializer(TopicTuple.objects.filter(topic=instance), many=True).data,
+            "u_mass": instance.u_mass or None
         }
 
 

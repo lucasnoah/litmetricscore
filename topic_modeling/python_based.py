@@ -280,9 +280,11 @@ def build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data, 
     )
 
     for topic in topics:
-        new_topic = Topic.objects.create(topic_model_group=topic_group)
+        print 'umass topic', topic
+
         # topic_group.
         if method == 'mallet':
+            new_topic = Topic.objects.create(topic_model_group=topic_group)
             for topic_tuple in topic:
                 print topic_tuple
                 TopicTuple.objects.create(
@@ -291,10 +293,11 @@ def build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data, 
                     topic=new_topic
                 )
         else:
-            for topic_tuple in topic[1]:
+            new_topic = Topic.objects.create(topic_model_group=topic_group, u_mass=topic[1])
+            for topic_tuple in topic[0]:
                 TopicTuple.objects.create(
-                    word=topic_tuple[0],
-                    weight=topic_tuple[1],
+                    word=topic_tuple[1],
+                    weight=topic_tuple[0],
                     topic=new_topic
                 )
 
@@ -371,8 +374,9 @@ def topic_modeling_celery_task(collection_data, options, user, *args, **kwargs):
     del options['update_every']
     handler.train_lda_model(options['numTopics'], update_every, options['numPasses'], options)
     handler.lda_model.top_topics(handler.corpus, options['numTopics'])
-    topics = handler.lda_model.show_topics(num_topics=options['numTopics'], num_words=options['top_n'], log=False, formatted=False)
+    topics = handler.lda_model.top_topics(handler.corpus, num_words=options['top_n'])
     # create output models
+    print 'the topics', topics
     topic_group = build_and_save_topic_tuples_and_topic_groups(topics, user, collection_data, 'lda', options)
     # relate collections to topic group
     print 'I got topic groups', topic_group

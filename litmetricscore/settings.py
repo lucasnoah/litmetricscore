@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'djoser',
     'celery',
     'corsheaders',
-    'rest_framework_swagger',
+    #'rest_framework_swagger',
 
     # my apps
     'core',
