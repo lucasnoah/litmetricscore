@@ -92,8 +92,9 @@ class ExportManager:
         get_attr = operator.attrgetter('sentence')
         sentence_list = [list(g) for k, g in itertools.groupby(sorted(self.tokens, key=get_attr), get_attr)]
         sentence_string_chunks = []
-        for sentence in sentence_list:
-            raw_chunk = " ".join(sorted([x.word for x in sentence], key=lambda x: x.id ))
+        for sentence in sorted(sentence_list):
+            sorted_sentence = sorted(sentence, key=lambda x: x.id)
+            raw_chunk = " ".join([x.word for x in sorted_sentence])
             sentence_string_chunks.append(raw_chunk)
         output_string = " | ".join(sentence_string_chunks)
         print output_string

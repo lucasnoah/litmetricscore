@@ -100,8 +100,8 @@
       <file leaf-file-name="exporters.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/core/exporters.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="103" column="94" selection-start-line="103" selection-start-column="94" selection-end-line="103" selection-end-column="94" />
+            <state relative-caret-position="360">
+              <caret line="107" column="52" selection-start-line="107" selection-start-column="51" selection-end-line="107" selection-end-column="52" />
               <folding>
                 <element signature="e#0#56#0" expanded="true" />
               </folding>
@@ -757,13 +757,6 @@
       <option name="presentableId" value="Default" />
       <updated>1463358262264</updated>
     </task>
-    <task id="LOCAL-00013" summary="fix stopwords and allow for default filters">
-      <created>1465326123458</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1465326123458</updated>
-    </task>
     <task id="LOCAL-00014" summary="add csv endpoint for models">
       <created>1465429610752</created>
       <option name="number" value="00014" />
@@ -1100,7 +1093,14 @@
       <option name="project" value="LOCAL" />
       <updated>1475251741875</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="sort sentence members by id">
+      <created>1484188309670</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1484188309670</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1199,7 +1199,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="-clean up some print statements&#10;-add swagge api documentation &#10;-create real readme.md doc" />
     <MESSAGE value="-add vard options&#10;-update default stopwords" />
     <MESSAGE value="-remove docs urls" />
     <MESSAGE value="remove sendgrid key" />
@@ -1224,7 +1223,8 @@
     <MESSAGE value="return topic coherance" />
     <MESSAGE value="fix wordnet bug in topic modeling pages" />
     <MESSAGE value="addd new package" />
-    <option name="LAST_COMMIT_MESSAGE" value="addd new package" />
+    <MESSAGE value="sort sentence members by id" />
+    <option name="LAST_COMMIT_MESSAGE" value="sort sentence members by id" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1616,8 +1616,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/core/exporters.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="103" column="94" selection-start-line="103" selection-start-column="94" selection-end-line="103" selection-end-column="94" />
+        <state relative-caret-position="360">
+          <caret line="107" column="52" selection-start-line="107" selection-start-column="51" selection-end-line="107" selection-end-column="52" />
           <folding>
             <element signature="e#0#56#0" expanded="true" />
           </folding>
