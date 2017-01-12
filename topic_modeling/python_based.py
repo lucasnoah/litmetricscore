@@ -12,7 +12,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 from litmetricscore.celery import app
 from django.core.mail import send_mail
-from gensimsimilarities.word_pair_similarity_matrix import all_in_one_similiarity_matrix
+from .gensimsimilarities.word_pair_similarity_matrix import all_in_one_similiarity_matrix
 from gensim.models.word2vec import Word2Vec
 
 # gather words to be modeled as a list of words
