@@ -65,7 +65,7 @@ class TopicModelViewSet(viewsets.ModelViewSet):
         user = self.request.user
         modeling_options = self.request.data['options']
         collection_data = self.request.data['collections']
-        lsi_celery_task.delay(collection_data, modeling_options, user.id)
+        lsi_celery_task(collection_data, modeling_options, user.id)
         return Response(status=200)
 
     @list_route(['POST'])

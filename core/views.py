@@ -165,9 +165,17 @@ class CorpusItemCollectionViewset(viewsets.ModelViewSet):
         :return:
         """
         print 'request data', self.request.data
+        # is a list of corpus items and id's
         collection = self.request.data.get('collection')
+        # filter data
         filter = self.request.data.get('filter')
-        return create_download_of_parsed_collection(collection['id'], filter)
+        # type of export
+        export_type = self.request.data.get('export_type')
+        from core.exporters import ExportManager
+        em = ExportManager(collection, filter, export_type)
+        url = em.do_export()
+        # create_download_of_parsed_collection(collection['id'], filter)
+        return Response(status=200, data={"url":url})
 
 
 class WordTokenViewSet(viewsets.ModelViewSet):
