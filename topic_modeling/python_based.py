@@ -12,7 +12,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 from litmetricscore.celery import app
 from django.core.mail import send_mail
-
+from gensimsimilarities.word_pair_similarity_matrix import all_in_one_similiarity_matrix
+from gensim.models.word2vec import Word2Vec
 
 # gather words to be modeled as a list of words
 
@@ -234,6 +235,9 @@ class CollectionParser:
 
     def get_bow(self):
         return self.bow
+
+    def get_tokens(self):
+        return self.tokens
 
     def do_wordnet_tagging(self, token, out_token):
         """
@@ -532,8 +536,10 @@ def lsi_celery_task(collection_data, options, user):
 
     # get tokens from collections and filter them
     filtered_docs = []
+    wordnet_status = options['wordNetSense']
+    print "wordnet status", wordnet_status
     for item in collection_data:
-            tokens = CollectionParser(item['id'], item['filter'], options['wordNetSense']).get_bow()
+            tokens = CollectionParser(item['id'], item['filter'], wordnet_status=wordnet_status).get_bow()
             filtered_docs.append(tokens)
 
     # handle chunk by count case
@@ -558,29 +564,60 @@ def lsi_celery_task(collection_data, options, user):
     for doc in chunked_words_bags:
         stringed_docs.append(" ".join([x.lower() for x in doc]))
 
-    # set up and execute gensim modeling
     try:
-        transformer = TfidfVectorizer()
-        tfidf = transformer.fit_transform(stringed_docs)
-        num_components = 2
-        if len(stringed_docs) < 2:
-            num_components = 1
-        svd = TruncatedSVD(n_components=num_components)
-        lsa = svd.fit_transform(tfidf.T)
-        terms = kClosestTerms(15, options['search_query'], transformer, lsa)
+        # set up and execute gensim modeling
+        print "#######################333333"
+        print "GO GO HANDELR FOR DICT AND DCORPUS"
+        handler = LdaHandler(chunked_words_bags)
+        handler.create_dictionary()
+        handler.create_corpus()
+
+
+        one_d_vec = None
+        working = False
+        search_query = options['search_query']
+        # loop through the dictionary and find the search query
+        for key, val in handler.dictionary.items():
+            print key, val, search_query, val==search_query
+            if val == options['search_query']:
+                print val
+                print "###########################################33"
+                print "The v key is lit"
+                working = True
+                one_d_vec = val
+                break
+
+
+
+        num_topics = 200
+        lsi_model = gensim.models.lsimodel.LsiModel(corpus=handler.corpus, num_topics=1, id2word=handler.dictionary,
+                                                    chunksize=20000, decay=1.0,distributed=False, onepass=True,
+                                                    power_iters=2, extra_samples=100)
+
+
+
+
+
+        one_d_vec = options['search_query']
+        print "####ONE D VECK#####sss"
+        print one_d_vec
+        sim_table = all_in_one_similiarity_matrix([one_d_vec],handler.dictionary,lsi_model,num_topics,[],True)
+        print "Showing similarity table "
+        print sim_table
+
+
+        LsiResult(
+            user=user,
+            results=json.dumps(terms),
+            query_term=options['search_query']
+        ).save()
+        result = LsiResult.objects.last()
+        collections = [CorpusItemCollection.objects.get(pk=c.get('id')) for c in collection_data]
+        for collection in collections:
+            result.collections.add(collection)
+        result.save()
     except Exception as e:
         print e
-        terms = ["No results found for search"]
-    LsiResult(
-        user=user,
-        results=json.dumps(terms),
-        query_term=options['search_query']
-    ).save()
-    result = LsiResult.objects.last()
-    collections = [CorpusItemCollection.objects.get(pk=c.get('id')) for c in collection_data]
-    for collection in collections:
-        result.collections.add(collection)
-    result.save()
 
 
 

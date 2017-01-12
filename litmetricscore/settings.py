@@ -10,8 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
-import os, sys
-
+import os, sys, environ
+env = environ.Env()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -27,6 +27,10 @@ DEBUG = True
 ALLOWED_HOSTS = ['localhost:9000', '*']
 
 # Application definition
+
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+AWS_BUCKET_NAME = env('AWS_BUCKET_NAME')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
