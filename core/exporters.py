@@ -66,13 +66,13 @@ class ExportManager:
         return self.upload_data_to_s3(output_string)
 
     def export_true_text(self):
-        output_string = " ".join([token.word for token in self.tokens])
+        output_string = " ".join([token.word for token in sorted(self.tokens, key=lambda x:x.id)])
         print "OUTPUT STRING", output_string
         return self.upload_data_to_s3(output_string)
 
     def export_pipe_four(self):
         # select tokens without punctuation
-        tokens = [token.word for token in self.tokens if token.word not in list(string.punctuation)]
+        tokens = [token.word for token in sorted(self.tokens, key=lambda x:x.id) if token.word not in list(string.punctuation)]
         # chunk it
         chunks = [tokens[i:i + 4] for i in xrange(0, len(tokens), 4)]
         chunk_list = []
@@ -102,7 +102,7 @@ class ExportManager:
 
 
     def export_pipe_tagged(self):
-        tokens = [token.word + "-" + token.pos+ "-" + token.wordnet_id for token in self.tokens if token.word not in list(string.punctuation)]
+        tokens = [token.word + "-" + token.pos+ "-" + token.wordnet_id for token in sorted(self.tokens, key=lambda x:x.id) if token.word not in list(string.punctuation)]
         output_string = " | ".join(tokens)
         print output_string
         return self.upload_data_to_s3(output_string)
