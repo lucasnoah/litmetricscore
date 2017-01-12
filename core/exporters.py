@@ -61,7 +61,7 @@ class ExportManager:
 
 
     def export_raw_text(self):
-        output_string = " ".join([token.word for token in self.tokens if token.word not in list(string.punctuation)])
+        output_string = " ".join([token.word for token in sorted(self.tokens, key=lambda x:x.id) if token.word not in list(string.punctuation)])
         print "OUTPUT STRING", output_string
         return self.upload_data_to_s3(output_string)
 

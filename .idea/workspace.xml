@@ -101,7 +101,7 @@
         <entry file="file://$PROJECT_DIR$/core/exporters.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="360">
-              <caret line="107" column="52" selection-start-line="107" selection-start-column="51" selection-end-line="107" selection-end-column="52" />
+              <caret line="75" column="18" selection-start-line="75" selection-start-column="18" selection-end-line="75" selection-end-column="18" />
               <folding>
                 <element signature="e#0#56#0" expanded="true" />
               </folding>
@@ -757,13 +757,6 @@
       <option name="presentableId" value="Default" />
       <updated>1463358262264</updated>
     </task>
-    <task id="LOCAL-00014" summary="add csv endpoint for models">
-      <created>1465429610752</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1465429610752</updated>
-    </task>
     <task id="LOCAL-00015" summary="add compose dependency to web">
       <created>1465432664554</created>
       <option name="number" value="00015" />
@@ -1100,7 +1093,14 @@
       <option name="project" value="LOCAL" />
       <updated>1484188309670</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="sort sentence members by id">
+      <created>1484189187063</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1484189187063</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1617,7 +1617,7 @@
     <entry file="file://$PROJECT_DIR$/core/exporters.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
-          <caret line="107" column="52" selection-start-line="107" selection-start-column="51" selection-end-line="107" selection-end-column="52" />
+          <caret line="75" column="18" selection-start-line="75" selection-start-column="18" selection-end-line="75" selection-end-column="18" />
           <folding>
             <element signature="e#0#56#0" expanded="true" />
           </folding>
