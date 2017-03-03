@@ -187,13 +187,12 @@ class WordTokenViewSet(viewsets.ModelViewSet):
 
     queryset = WordToken.objects.all()
     serializer_class = WordTokenSerializer
-    pagination_class = TokenPagination
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         corpus_id = self.request.query_params['corpus_id']
         corpus_item = CorpusItem.objects.get(pk=corpus_id)
         qs = WordToken.objects.filter(sentence__corpus_item=corpus_item)
-        print qs[0]
         return qs
 
 
