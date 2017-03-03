@@ -4,7 +4,6 @@
     <list default="true" id="6ca0b88b-b94c-41a4-b5b6-f5463f5b5221" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/paginators.py" afterPath="$PROJECT_DIR$/core/paginators.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/views.py" afterPath="$PROJECT_DIR$/core/views.py" />
     </list>
     <ignored path="litmetricscore.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -69,8 +68,8 @@
       <file leaf-file-name="paginators.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/core/paginators.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+            <state relative-caret-position="72">
+              <caret line="4" column="17" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -701,13 +700,6 @@
       <option name="presentableId" value="Default" />
       <updated>1463358262264</updated>
     </task>
-    <task id="LOCAL-00017" summary="- add hdp topic modeling&#10;-add lsi topic modeling">
-      <created>1465859378082</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1465859378082</updated>
-    </task>
     <task id="LOCAL-00018" summary="add in tracking of topic modeling options &#10;tweak related serialezers">
       <created>1465883422083</created>
       <option name="number" value="00018" />
@@ -1044,7 +1036,14 @@
       <option name="project" value="LOCAL" />
       <updated>1484189535523</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL-00066" summary="update token count">
+      <created>1488583368241</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1488583368241</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1143,7 +1142,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="-add vard options&#10;-update default stopwords" />
     <MESSAGE value="-remove docs urls" />
     <MESSAGE value="remove sendgrid key" />
     <MESSAGE value="add nonsense word to default stopword list" />
@@ -1168,7 +1166,8 @@
     <MESSAGE value="fix wordnet bug in topic modeling pages" />
     <MESSAGE value="addd new package" />
     <MESSAGE value="sort sentence members by id" />
-    <option name="LAST_COMMIT_MESSAGE" value="sort sentence members by id" />
+    <MESSAGE value="update token count" />
+    <option name="LAST_COMMIT_MESSAGE" value="update token count" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1467,7 +1466,7 @@
         <state relative-caret-position="54">
           <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
           <folding>
-            <element signature="e#0#48#0" expanded="true" />
+            <element signature="e#0#48#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1556,8 +1555,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/core/paginators.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+        <state relative-caret-position="72">
+          <caret line="4" column="17" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
           <folding />
         </state>
       </provider>
