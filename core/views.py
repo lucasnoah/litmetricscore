@@ -164,7 +164,7 @@ class CorpusItemCollectionViewset(viewsets.ModelViewSet):
         :param pk:
         :return:
         """
-        print 'request data', self.request.data
+
         # is a list of corpus items and id's
         collection = self.request.data.get('collection')
         # filter data
@@ -217,8 +217,6 @@ class WordTokenViewSet(viewsets.ModelViewSet):
 
         else:
             return Response(status=403, data='Not your token bro.')
-
-
 
 
 class CorpusItemFilterViewSet(viewsets.ModelViewSet):
