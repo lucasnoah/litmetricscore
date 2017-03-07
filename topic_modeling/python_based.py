@@ -316,7 +316,7 @@ def add_collections_to_topic_group(topic_group, collections):
     :param collections:
     :return:
     """
-    collections_objects = [CorpusItemCollection.objects.get(pk=c['id']) for c in collections]
+    collections_objects = [CorpusItemCollection.objects.get(pk=c.get('collectionId')) for c in collections]
     for c in collections_objects:
         topic_group.collections.add(c)
 
