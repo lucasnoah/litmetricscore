@@ -245,4 +245,5 @@ class CorpusItemFilterViewSet(viewsets.ModelViewSet):
             filter.filter_data = self.request.data.get('filter_data')
             filter.name = self.request.data.get('name', filter.name)
             filter.save()
-            return Response(status=200)
+            serializer = CorpusItemFilterSerializer(filter)
+            return Response(status=200, data=serializer.data)

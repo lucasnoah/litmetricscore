@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="6ca0b88b-b94c-41a4-b5b6-f5463f5b5221" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/topic_modeling/python_based.py" afterPath="$PROJECT_DIR$/topic_modeling/python_based.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/views.py" afterPath="$PROJECT_DIR$/core/views.py" />
     </list>
     <ignored path="litmetricscore.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -53,6 +53,16 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/core/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="345">
+              <caret line="242" column="39" selection-start-line="242" selection-start-column="39" selection-end-line="242" selection-end-column="39" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/topic_modeling/views.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -73,7 +83,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="python_based.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="python_based.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/topic_modeling/python_based.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="467">
@@ -126,8 +136,8 @@
       <file leaf-file-name="serializers.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/serializers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="449">
-              <caret line="40" column="25" selection-start-line="40" selection-start-column="25" selection-end-line="40" selection-end-column="25" />
+            <state relative-caret-position="414">
+              <caret line="24" column="56" selection-start-line="24" selection-start-column="56" selection-end-line="24" selection-end-column="56" />
               <folding />
             </state>
           </provider>
@@ -138,16 +148,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="396">
               <caret line="22" column="19" selection-start-line="22" selection-start-column="19" selection-end-line="22" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/models.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="349">
-              <caret line="48" column="43" selection-start-line="48" selection-start-column="43" selection-end-line="48" selection-end-column="43" />
               <folding />
             </state>
           </provider>
@@ -198,11 +198,11 @@
         <option value="$PROJECT_DIR$/topic_modeling/gensimsimilarities/word2vec_vect_sim_fun.py" />
         <option value="$PROJECT_DIR$/core/exporters.py" />
         <option value="$PROJECT_DIR$/core/paginators.py" />
-        <option value="$PROJECT_DIR$/core/views.py" />
         <option value="$PROJECT_DIR$/litmetricscore/settings.py" />
         <option value="$PROJECT_DIR$/topic_modeling/views.py" />
         <option value="$PROJECT_DIR$/core/models.py" />
         <option value="$PROJECT_DIR$/topic_modeling/python_based.py" />
+        <option value="$PROJECT_DIR$/core/views.py" />
       </list>
     </option>
   </component>
@@ -272,20 +272,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="topic_modeling" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="litmetricscore" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="litmetricscore" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="litmetricscore" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -742,20 +728,6 @@
       <option name="presentableId" value="Default" />
       <updated>1463358262264</updated>
     </task>
-    <task id="LOCAL-00026" summary="tweak topic modeling migrations">
-      <created>1466273824428</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1466273824428</updated>
-    </task>
-    <task id="LOCAL-00027" summary="add docker-compose migrations back in">
-      <created>1466274211201</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1466274211201</updated>
-    </task>
     <task id="LOCAL-00028" summary="remove -y form migrations command">
       <created>1466274275243</created>
       <option name="number" value="00028" />
@@ -1085,7 +1057,21 @@
       <option name="project" value="LOCAL" />
       <updated>1488929120559</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="dump api naming convention changes to the rest of the celery tasks">
+      <created>1488929421981</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1488929421981</updated>
+    </task>
+    <task id="LOCAL-00076" summary="update filter patch endpoint">
+      <created>1488930351757</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1488930351757</updated>
+    </task>
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1184,8 +1170,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="stopwords are now lists" />
-    <MESSAGE value="removing offending line of code that breaks filters" />
     <MESSAGE value="insert test statemetn" />
     <MESSAGE value="remove non usefull stuff from stopword filtering equation" />
     <MESSAGE value="fix serializer error that was breaking corpus collection use." />
@@ -1209,7 +1193,9 @@
     <MESSAGE value="refactor topic modeling celery task for new api flow" />
     <MESSAGE value="correct name dictionary error in topic modeling view" />
     <MESSAGE value="more parse errors fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="more parse errors fixed" />
+    <MESSAGE value="dump api naming convention changes to the rest of the celery tasks" />
+    <MESSAGE value="update filter patch endpoint" />
+    <option name="LAST_COMMIT_MESSAGE" value="update filter patch endpoint" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1521,28 +1507,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-307">
-          <caret line="200" column="11" selection-start-line="200" selection-start-column="11" selection-end-line="200" selection-end-column="11" />
-          <folding>
-            <element signature="e#0#36#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/core/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="349">
           <caret line="48" column="43" selection-start-line="48" selection-start-column="43" selection-end-line="48" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/serializers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="449">
-          <caret line="40" column="25" selection-start-line="40" selection-start-column="25" selection-end-line="40" selection-end-column="25" />
           <folding />
         </state>
       </provider>
@@ -1607,6 +1575,22 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="467">
           <caret line="641" column="0" selection-start-line="641" selection-start-column="0" selection-end-line="641" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/serializers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="24" column="56" selection-start-line="24" selection-start-column="56" selection-end-line="24" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="242" column="39" selection-start-line="242" selection-start-column="39" selection-end-line="242" selection-end-column="39" />
           <folding />
         </state>
       </provider>
