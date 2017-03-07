@@ -413,7 +413,10 @@ def mallet_celery_task(collection_data, options, user, *args, **kwargs):
     # get collection tokens and filter them
     filtered_docs = []
     for item in collection_data:
-        tokens = CollectionParser(item['id'], item['filter'], wordnet_status=options['wordNetSense']).get_bow()
+        collection_id = item.get('collectionId')
+        # grab the filter
+        filter_id = item.get('filter')
+        tokens = CollectionParser(collection_id, filter_id, wordnet_status=options['wordNetSense']).get_bow()
         filtered_docs.append(tokens)
 
     # handle chunk by count case
@@ -466,7 +469,10 @@ def hdp_celery_task(collection_data, options, user):
     # get tokens from collection and filter them
     filtered_docs = []
     for item in collection_data:
-        tokens = CollectionParser(item['id'], item['filter'], wordnet_status=options['wordNetSense']).get_bow()
+        collection_id = item.get('collectionId')
+        # grab the filter
+        filter_id = item.get('filter')
+        tokens = CollectionParser(collection_id, filter_id, wordnet_status=options['wordNetSense']).get_bow()
         filtered_docs.append(tokens)
 
     # handle chunk by count case
@@ -549,8 +555,11 @@ def lsi_celery_task(collection_data, options, user):
     wordnet_status = options['wordNetSense']
     print "wordnet status", wordnet_status
     for item in collection_data:
-            tokens = CollectionParser(item['id'], item['filter'], wordnet_status=wordnet_status).get_bow()
-            filtered_docs.append(tokens)
+        collection_id = item.get('collectionId')
+        # grab the filter
+        filter_id = item.get('filter')
+        tokens = CollectionParser(collection_id, filter_id, wordnet_status=wordnet_status).get_bow()
+        filtered_docs.append(tokens)
 
     # handle chunk by count case
     if options['chunking'] == "count":
