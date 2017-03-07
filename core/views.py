@@ -243,5 +243,6 @@ class CorpusItemFilterViewSet(viewsets.ModelViewSet):
             return Response(status=403)
         else:
             filter.filter_data = self.request.data.get('filter_data')
+            filter.name = self.request.data.get('name', filter.name)
             filter.save()
             return Response(status=200)
