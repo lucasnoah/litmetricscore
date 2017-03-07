@@ -261,7 +261,7 @@ class CollectionParser:
         Converts to a list of strings and deals with lemmatization and wordnet id tagging.
         :return:
         """
-        if self.filter['filter_data']['lemma'] and not self.lock_status:
+        if self.filter['lemma'] and not self.lock_status:
             self.bow = [self.do_wordnet_tagging(token, token.lemma) for token in self.tokens]
 
         else:

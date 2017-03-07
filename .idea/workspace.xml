@@ -4,7 +4,6 @@
     <list default="true" id="6ca0b88b-b94c-41a4-b5b6-f5463f5b5221" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/topic_modeling/python_based.py" afterPath="$PROJECT_DIR$/topic_modeling/python_based.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/topic_modeling/views.py" afterPath="$PROJECT_DIR$/topic_modeling/views.py" />
     </list>
     <ignored path="litmetricscore.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -89,8 +88,8 @@
       <file leaf-file-name="python_based.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/topic_modeling/python_based.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="395">
-              <caret line="347" column="22" selection-start-line="347" selection-start-column="22" selection-end-line="347" selection-end-column="22" />
+            <state relative-caret-position="143">
+              <caret line="354" column="38" selection-start-line="354" selection-start-column="38" selection-end-line="355" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -745,13 +744,6 @@
       <option name="presentableId" value="Default" />
       <updated>1463358262264</updated>
     </task>
-    <task id="LOCAL-00023" summary="add core migrations to git">
-      <created>1466273510561</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1466273510561</updated>
-    </task>
     <task id="LOCAL-00024" summary="fix migration syntax error">
       <created>1466273533374</created>
       <option name="number" value="00024" />
@@ -1088,7 +1080,14 @@
       <option name="project" value="LOCAL" />
       <updated>1488584318872</updated>
     </task>
-    <option name="localTasksCounter" value="72" />
+    <task id="LOCAL-00072" summary="refactor topic modeling celery task for new api flow">
+      <created>1488928362652</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1488928362652</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1187,7 +1186,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="-remove docs urls" />
     <MESSAGE value="remove sendgrid key" />
     <MESSAGE value="add nonsense word to default stopword list" />
     <MESSAGE value="stopwords are now lists" />
@@ -1212,7 +1210,8 @@
     <MESSAGE value="addd new package" />
     <MESSAGE value="sort sentence members by id" />
     <MESSAGE value="update token count" />
-    <option name="LAST_COMMIT_MESSAGE" value="update token count" />
+    <MESSAGE value="refactor topic modeling celery task for new api flow" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor topic modeling celery task for new api flow" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1608,8 +1607,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/topic_modeling/python_based.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="395">
-          <caret line="347" column="22" selection-start-line="347" selection-start-column="22" selection-end-line="347" selection-end-column="22" />
+        <state relative-caret-position="143">
+          <caret line="354" column="38" selection-start-line="354" selection-start-column="38" selection-end-line="355" selection-end-column="0" />
           <folding />
         </state>
       </provider>
