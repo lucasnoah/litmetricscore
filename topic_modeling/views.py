@@ -49,6 +49,33 @@ class TopicModelViewSet(viewsets.ModelViewSet):
         consumes:
             - application/json
 
+        {
+
+              collections: [
+                {
+                  collectionId: int,
+                  filterId: int
+                },
+                {
+                  collectionId: int,
+                  filterId: int
+                }
+              ],
+
+              options: {
+                   alpha: string',
+                    chunking: bool,
+                    gamma_threshold: float,
+                    iterations: int,
+                    lemmas: bool,
+                    minimum_probability: float,
+                    numTopics: int,
+                    top_n: int,
+                    wordNetSense: bool
+              },
+
+              filter: 'none' or 'default' or int
+            }
         """
 
         user = self.request.user

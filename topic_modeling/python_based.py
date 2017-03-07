@@ -197,25 +197,30 @@ class CollectionParser:
         self.make_bow()
 
 
-    def get_filter_dict(self, filter):
+    def get_filter_dict(self, filter_id):
         """
         Handle filling out the data for the standard filters
         :param filter:
         :return:
         """
-        if filter['name'] == 'default':
-            return settings.DEFAULT_FILTER
-        elif filter['name'] == 'none':
-            return settings.NONE_FILTER
+        if filter_id == 'default':
+            filter_to_use = settings.DEFAULT_FILTER.get('filter_data')
+        if filter_id == "none":
+            filter_to_use = settings.NONE_FILTER.get('filter_data')
         else:
-            return filter
+            try:
+                filter_to_use = CorpusItemFilter.objects.get(pk=filter_id).filter_data
+            except Exception:
+                filter_to_use = settings.NONE_FILTER.get('filter_data')
+
+        return filter_to_use
 
     def apply_filter_to_collection(self):
         document_token_bag = []
         for l in self.token_lists:
-            qs = select_only_desired_pos_tags(l, self.filter['filter_data']['pos'])
-            qs = filter_out_stopwords(qs, self.filter['filter_data']['stopwords'])
-            qs = filter_out_named_entities(qs, self.filter['filter_data']['ner'])
+            qs = select_only_desired_pos_tags(l, self.filter['pos'])
+            qs = filter_out_stopwords(qs, self.filter['stopwords'])
+            qs = filter_out_named_entities(qs, self.filter['ner'])
             document_token_bag += list(qs)
         return document_token_bag
 
@@ -344,7 +349,12 @@ def topic_modeling_celery_task(collection_data, options, user, *args, **kwargs):
     wordnet_status = options['wordNetSense']
     for item in collection_data:
         # overide the collections filter wordnet status.  This should probably live somewhere else in the future.
-        tokens = CollectionParser(item['id'], item['filter'], wordnet_status=wordnet_status).get_bow()
+        # grab the collection id
+        collection_id = item.get('collectionId')
+        # grab the filter
+        filter_id = item.get('filter')
+
+        tokens = CollectionParser(collection_id, filter_id, wordnet_status=wordnet_status).get_bow()
         filtered_docs.append(tokens)
 
     # handle chunk by count case
