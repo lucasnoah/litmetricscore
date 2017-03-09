@@ -35,6 +35,7 @@ class CorpusItemCollection(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     corpus_items = models.ManyToManyField(CorpusItem, blank=True)
     locked = models.BooleanField(default=False)
+    show = models.BooleanField(default=True)
 
 
 class CorpusItemFilter(models.Model):
