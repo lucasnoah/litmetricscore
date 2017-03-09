@@ -10,6 +10,7 @@ class TopicModelGroup(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     method = models.CharField(max_length=30, default='lda')
     options = models.TextField()
+    show = models.BooleanField(default=True)
 
 
 class Topic(models.Model):

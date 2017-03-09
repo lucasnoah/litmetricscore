@@ -122,17 +122,15 @@ class CorpusItemCollectionViewset(viewsets.ModelViewSet):
         return Response(status=201, data=serializer.data)
 
     @list_route(['POST'])
-    def add_items(self, request, pk=None):
+    def hide(self, request, pk=None):
         """
         Add corpus items to a collection
         :param request:
         :param pk:
         :return:
         """
-        corpus_items = CorpusItem.objects.filter(pk__in=self.request.data['corpusItems'])
         collection = CorpusItemCollection.objects.get(pk=self.request.data['corpusCollection'])
-        for c in corpus_items:
-            collection.corpus_items.add(c)
+        collection.show = False
         collection.save()
         collection = CorpusItemCollection.objects.get(pk=self.request.data['corpusCollection'])
         collection_serializer= CorpusItemCollectionSerializer(collection)
@@ -155,6 +153,24 @@ class CorpusItemCollectionViewset(viewsets.ModelViewSet):
 
         collection_serializer = CorpusItemCollectionSerializer(collection)
         return Response(status=200, data=collection_serializer.data)
+
+    @list_route(['POST'])
+    def add_items(self, request, pk=None):
+        """
+        Add corpus items to a collection
+        :param request:
+        :param pk:
+        :return:
+        """
+        corpus_items = CorpusItem.objects.filter(pk__in=self.request.data['corpusItems'])
+        collection = CorpusItemCollection.objects.get(pk=self.request.data['corpusCollection'])
+        for c in corpus_items:
+            collection.corpus_items.add(c)
+        collection.save()
+        collection = CorpusItemCollection.objects.get(pk=self.request.data['corpusCollection'])
+        collection_serializer = CorpusItemCollectionSerializer(collection)
+
+        return Response(status=201, data=collection_serializer.data)
 
     @list_route(['POST'])
     def export(self, request, pk=None):
