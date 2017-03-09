@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="6ca0b88b-b94c-41a4-b5b6-f5463f5b5221" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/views.py" afterPath="$PROJECT_DIR$/core/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docker-compose.yml" afterPath="$PROJECT_DIR$/docker-compose.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/topic_modeling/models.py" afterPath="$PROJECT_DIR$/topic_modeling/models.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/serializers.py" afterPath="$PROJECT_DIR$/core/serializers.py" />
     </list>
     <ignored path="litmetricscore.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -58,8 +56,8 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="133" column="25" selection-start-line="133" selection-start-column="25" selection-end-line="133" selection-end-column="25" />
+            <state relative-caret-position="360">
+              <caret line="132" column="31" selection-start-line="132" selection-start-column="31" selection-end-line="132" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -135,17 +133,17 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="serializers.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="serializers.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/core/serializers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="414">
-              <caret line="24" column="56" selection-start-line="24" selection-start-column="56" selection-end-line="24" selection-end-column="56" />
+            <state relative-caret-position="251">
+              <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="docker-compose.yml" pinned="false" current-in-tab="true">
+      <file leaf-file-name="docker-compose.yml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/docker-compose.yml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="414">
@@ -185,7 +183,6 @@
         <option value="$PROJECT_DIR$/vard/interface.py" />
         <option value="$PROJECT_DIR$/litmetricscore/urls.py" />
         <option value="$PROJECT_DIR$/topic_modeling/filters.py" />
-        <option value="$PROJECT_DIR$/core/serializers.py" />
         <option value="$PROJECT_DIR$/core/nlp_server.py" />
         <option value="$PROJECT_DIR$/core/sentence_parsers.py" />
         <option value="$PROJECT_DIR$/topic_modeling/serializers.py" />
@@ -205,6 +202,7 @@
         <option value="$PROJECT_DIR$/topic_modeling/models.py" />
         <option value="$PROJECT_DIR$/core/views.py" />
         <option value="$PROJECT_DIR$/docker-compose.yml" />
+        <option value="$PROJECT_DIR$/core/serializers.py" />
       </list>
     </option>
   </component>
@@ -730,13 +728,6 @@
       <option name="presentableId" value="Default" />
       <updated>1463358262264</updated>
     </task>
-    <task id="LOCAL-00029" summary="add chunking into the processing process">
-      <created>1466462492193</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1466462492193</updated>
-    </task>
     <task id="LOCAL-00030" summary="filtering redux&#10;lsi model results updated">
       <created>1467224593918</created>
       <option name="number" value="00030" />
@@ -1073,7 +1064,14 @@
       <option name="project" value="LOCAL" />
       <updated>1488930788731</updated>
     </task>
-    <option name="localTasksCounter" value="78" />
+    <task id="LOCAL-00078" summary="update collections with show hide field">
+      <created>1489094667785</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1489094667785</updated>
+    </task>
+    <option name="localTasksCounter" value="79" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1172,7 +1170,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="insert test statemetn" />
     <MESSAGE value="remove non usefull stuff from stopword filtering equation" />
     <MESSAGE value="fix serializer error that was breaking corpus collection use." />
     <MESSAGE value="fix export filtering problem" />
@@ -1197,7 +1194,8 @@
     <MESSAGE value="more parse errors fixed" />
     <MESSAGE value="dump api naming convention changes to the rest of the celery tasks" />
     <MESSAGE value="update filter patch endpoint" />
-    <option name="LAST_COMMIT_MESSAGE" value="update filter patch endpoint" />
+    <MESSAGE value="update collections with show hide field" />
+    <option name="LAST_COMMIT_MESSAGE" value="update collections with show hide field" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1544,14 +1542,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/serializers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="414">
-          <caret line="24" column="56" selection-start-line="24" selection-start-column="56" selection-end-line="24" selection-end-column="56" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/core/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-415">
@@ -1576,18 +1566,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="133" column="25" selection-start-line="133" selection-start-column="25" selection-end-line="133" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/docker-compose.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="414">
           <caret line="35" column="22" selection-start-line="35" selection-start-column="22" selection-end-line="35" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="132" column="31" selection-start-line="132" selection-start-column="31" selection-end-line="132" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/serializers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="251">
+          <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
           <folding />
         </state>
       </provider>
